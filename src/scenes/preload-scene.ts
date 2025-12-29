@@ -21,6 +21,8 @@ export class PreloadScene extends Phaser.Scene {
 
     createAnimations() {
         this.anims.createFromAseprite(ASSET_KEYS.PLAYER);
-        console.log(this.anims.anims.entries);
+
+        // list all entries of the animations -> check if it works
+        //console.log(this.anims.anims.entries);
     }
 }
