@@ -45,7 +45,7 @@ export const PlayerAnimation = {
     PICKUP_WALKING_LEFT: 'pickup_left_walking',
 };
 
-export const PLAYER_ANIMATION_KEYS = {
+/* export const PLAYER_ANIMATION_KEYS = {
     WALK_DOWN: 'player_walk_down',
     WALK_UP: 'player_walk_up',
     WALK_SIDE: 'player_walk_side',
@@ -70,7 +70,7 @@ export const PLAYER_ANIMATION_KEYS = {
     SWORD_1_ATTACK_DOWN: 'player_atk_1_down',
     SWORD_1_ATTACK_UP: 'player_atk_1_up',
     SWORD_1_ATTACK_SIDE: 'player_atk_1_side',
-} as const;
+} as const; */
 
 export const SPIDER_ANIMATION_KEYS = {
     WALK: 'spider_walk',
@@ -94,37 +94,6 @@ export const DROW_ANIMATION_KEYS = {
 
 export const WISP_ANIMATION_KEYS = {
     IDLE: 'wisp_idle',
-} as const;
-
-export const CHARACTER_ANIMATIONS = {
-    IDLE_DOWN: 'IDLE_DOWN',
-    IDLE_UP: 'IDLE_UP',
-    IDLE_LEFT: 'IDLE_LEFT',
-    IDLE_RIGHT: 'IDLE_RIGHT',
-    WALK_DOWN: 'WALK_DOWN',
-    WALK_UP: 'WALK_UP',
-    WALK_LEFT: 'WALK_LEFT',
-    WALK_RIGHT: 'WALK_RIGHT',
-    IDLE_HOLD_DOWN: 'IDLE_HOLD_DOWN',
-    IDLE_HOLD_UP: 'IDLE_HOLD_UP',
-    IDLE_HOLD_LEFT: 'IDLE_HOLD_LEFT',
-    IDLE_HOLD_RIGHT: 'IDLE_HOLD_RIGHT',
-    WALK_HOLD_DOWN: 'WALK_HOLD_DOWN',
-    WALK_HOLD_UP: 'WALK_HOLD_UP',
-    WALK_HOLD_LEFT: 'WALK_HOLD_LEFT',
-    WALK_HOLD_RIGHT: 'WALK_HOLD_RIGHT',
-    LIFT_DOWN: 'LIFT_DOWN',
-    LIFT_UP: 'LIFT_UP',
-    LIFT_LEFT: 'LIFT_LEFT',
-    LIFT_RIGHT: 'LIFT_RIGHT',
-    HURT_DOWN: 'HURT_DOWN',
-    HURT_UP: 'HURT_UP',
-    HURT_LEFT: 'HURT_LEFT',
-    HURT_RIGHT: 'HURT_RIGHT',
-    DIE_DOWN: 'DIE_DOWN',
-    DIE_UP: 'DIE_UP',
-    DIE_LEFT: 'DIE_LEFT',
-    DIE_RIGHT: 'DIE_RIGHT',
 } as const;
 
 export const CHEST_FRAME_KEYS = {

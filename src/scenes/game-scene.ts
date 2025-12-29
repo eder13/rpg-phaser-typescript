@@ -5,9 +5,11 @@ import Player from '../game-objects/player/player';
 import InputComponent from '../components/input-component/input';
 import KeyboardInput from '../components/input-component/keyboard';
 import Logger from '../common/logger';
+import Spider from '../game-objects/enemies/spider';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
+    spider!: Spider;
     controls!: InputComponent;
 
     constructor() {
@@ -51,5 +53,22 @@ export class GameScene extends Phaser.Scene {
             frame: 0,
             playerMovement: this.controls,
         });
+
+        this.spider = new Spider({
+            scene: this,
+            position: {
+                x: this.scale.width / 2,
+                y: this.scale.height / 2 + 50,
+            },
+            assetKey: ASSET_KEYS.SPIDER,
+            frame: 0,
+            movement: new InputComponent(),
+        });
+
+        this.spider.setCollideWorldBounds(true);
+    }
+
+    update(): void {
+        this.spider.update();
     }
 }

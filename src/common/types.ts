@@ -1,6 +1,7 @@
-import { CHARACTER_ANIMATIONS } from './assets';
+import Player from '../game-objects/player/player';
+import { PlayerAnimation } from './assets';
 
-export type CharacterAnimation = keyof typeof CHARACTER_ANIMATIONS;
+export type CharacterAnimation = keyof typeof PlayerAnimation;
 
 export type Position = {
     x: number;

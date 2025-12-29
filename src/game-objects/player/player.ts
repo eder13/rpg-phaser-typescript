@@ -3,6 +3,11 @@ import { Position } from '../../common/types';
 import * as Phaser from 'phaser';
 import InputComponent from '../../components/input-component/input';
 import ControlsComponent from '../../components/game-object/controls-component';
+import IdleState from '../../components/state-machine/states/player/idle-state';
+import StateMachine from '../../components/state-machine/state-machine';
+import { PlayerStates } from '../../components/state-machine/states/player/player-states';
+import RunningState from '../../components/state-machine/states/player/running-state';
+import { SPEED_PLAYER } from '../../common/globals';
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -13,18 +18,22 @@ export interface PlayerConfig {
 }
 
 class Player extends Phaser.Physics.Arcade.Sprite {
-    controlsComponent!: ControlsComponent;
-    lastMovement = {
-        isMovingRight: false,
-        isMovingLeft: false,
-        isMovingUp: false,
-        isMovingDown: false,
-    };
+    controlsComponent: ControlsComponent;
+    stateMachine: StateMachine;
 
     constructor(config: PlayerConfig) {
         const { scene, position, assetKey, frame, playerMovement } = config;
         super(scene, position.x, position.y, assetKey, frame);
+
+        // All the components that are used here.
         this.controlsComponent = new ControlsComponent(this, playerMovement);
+
+        this.stateMachine = new StateMachine('player');
+        const idleState: IdleState = new IdleState(this);
+        this.stateMachine.addState(idleState);
+        const runningState: RunningState = new RunningState(this);
+        this.stateMachine.addState(runningState);
+        this.stateMachine.setState(PlayerStates.IDLE);
 
         // add the Player Object to the scene that we create here
         scene.add.existing(this);
@@ -40,166 +49,22 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(): void {
-        const lastMovement = {
-            isMovingRight: false,
-            isMovingLeft: false,
-            isMovingUp: false,
-            isMovingDown: false,
-        };
-
-        if (this.controlsComponent.controls.isDownDown) {
-            lastMovement.isMovingDown = true;
-            lastMovement.isMovingUp = false;
-            lastMovement.isMovingLeft = false;
-            lastMovement.isMovingRight = false;
-
-            this.play(
-                {
-                    key: PlayerAnimation.WALKING_DOWN,
-                    repeat: -1,
-                },
-                true,
-            );
-            this.updateVelocity(false, 1);
-        } else if (this.controlsComponent.controls.isUpDown) {
-            lastMovement.isMovingDown = false;
-            lastMovement.isMovingUp = true;
-            lastMovement.isMovingLeft = false;
-            lastMovement.isMovingRight = false;
-
-            this.play(
-                {
-                    key: PlayerAnimation.WALKING_UP,
-                    repeat: -1,
-                },
-                true,
-            );
-            this.updateVelocity(false, -1);
-        } else {
-            this.updateVelocity(false, 0);
-        }
-
-        const isMovingvertically =
-            this.controlsComponent.controls.isUpDown || this.controlsComponent.controls.isDownDown;
-
-        if (this.controlsComponent.controls.isLeftDown) {
-            if (!isMovingvertically) {
-                lastMovement.isMovingDown = false;
-                lastMovement.isMovingUp = false;
-                lastMovement.isMovingLeft = true;
-                lastMovement.isMovingRight = false;
-
-                this.play(
-                    {
-                        key: PlayerAnimation.WALKING_LEFT,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-
-            this.updateVelocity(true, -1);
-        } else if (this.controlsComponent.controls.isRightDown) {
-            if (!isMovingvertically) {
-                lastMovement.isMovingDown = false;
-                lastMovement.isMovingUp = false;
-                lastMovement.isMovingLeft = false;
-                lastMovement.isMovingRight = true;
-
-                this.play(
-                    {
-                        key: PlayerAnimation.WALKING_RIGHT,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-            this.updateVelocity(true, 1);
-        } else {
-            this.updateVelocity(true, 0);
-        }
-
-        if (
-            lastMovement.isMovingDown ||
-            lastMovement.isMovingLeft ||
-            lastMovement.isMovingRight ||
-            lastMovement.isMovingUp
-        ) {
-            this.lastMovement = lastMovement;
-        }
-
-        if (
-            !this.controlsComponent.controls.isRightDown &&
-            !this.controlsComponent.controls.isLeftDown &&
-            !this.controlsComponent.controls.isUpDown &&
-            !this.controlsComponent.controls.isDownDown
-        ) {
-            if (
-                !this.lastMovement.isMovingDown &&
-                !this.lastMovement.isMovingUp &&
-                !this.lastMovement.isMovingLeft &&
-                !this.lastMovement.isMovingRight
-            ) {
-                this.play(
-                    {
-                        key: PlayerAnimation.IDLE_DOWN,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-
-            if (this.lastMovement.isMovingDown) {
-                this.play(
-                    {
-                        key: PlayerAnimation.IDLE_DOWN,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-
-            if (this.lastMovement.isMovingUp) {
-                this.play(
-                    {
-                        key: PlayerAnimation.IDLE_UP,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-
-            if (this.lastMovement.isMovingLeft) {
-                this.play(
-                    {
-                        key: PlayerAnimation.IDLE_LEFT,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-
-            if (this.lastMovement.isMovingRight) {
-                this.play(
-                    {
-                        key: PlayerAnimation.IDLE_RIGHT,
-                        repeat: -1,
-                    },
-                    true,
-                );
-            }
-        }
+        this.stateMachine.update();
     }
 
-    private updateVelocity(isX: boolean, value: number) {
+    get controls() {
+        return this.controlsComponent.controls;
+    }
+
+    public updateVelocity(isX: boolean, value: number) {
         if (this.body) {
             if (isX) {
-                this.body.velocity.x = value * 80;
+                this.body.velocity.x = value * SPEED_PLAYER;
             } else {
-                this.body.velocity.y = value * 80;
+                this.body.velocity.y = value * SPEED_PLAYER;
             }
 
-            this.body.velocity.normalize().scale(80);
+            this.body.velocity.normalize().scale(SPEED_PLAYER);
         }
     }
 }
