@@ -43,33 +43,19 @@
         ]
     },
     {
-        "path": ""
-    },
-    {
         "path": "assets/images/player",
         "files": [
             {
                 "type": "aseprite",
                 "key": "PLAYER",
-                "textureURL": "main_green.png",
-                "atlasURL": "main_green.json"
+                "textureURL": "player.png",
+                "atlasURL": "player.json"
             },
             {
                 "type": "spritesheet",
                 "key": "DAGGER",
                 "url": "dagger.png",
                 "frameConfig": { "frameWidth": 16, "frameHeight": 16 }
-            }
-        ]
-    },
-    {
-        "path": "assets/sprites/player/player_movement",
-        "files": [
-            {
-                "type": "aseprite",
-                "key": "PLAYER_NEW",
-                "textureURL": "character.png",
-                "atlasURL": "player_movement.json"
             }
         ]
     },

@@ -1,3 +1,4 @@
+import { PlayerAnimation } from '../../common/assets';
 import { Position } from '../../common/types';
 import * as Phaser from 'phaser';
 
@@ -18,6 +19,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         // add Physics to the scene
         scene.physics.add.existing(this);
+
+        this.play({
+            key: PlayerAnimation.IDLE_DOWN,
+            repeat: -1,
+        });
     }
 }
 

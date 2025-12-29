@@ -4,7 +4,6 @@ export const ASSET_PACK_KEYS = {
 
 export const ASSET_KEYS = {
     PLAYER: 'PLAYER',
-    PLAYER_NEW: 'PLAYER_NEW',
     POT: 'POT',
     POT_BREAK: 'POT_BREAK',
     SPIDER: 'SPIDER',
@@ -27,24 +26,24 @@ export const ASSET_KEYS = {
     FONT_PRESS_START_2P: 'FONT_PRESS_START_2P',
 } as const;
 
-export enum PlayerAnimation {
-    IDLE_DOWN = 'idle_down',
-    WALKING_DOWN = 'walking_down',
-    PICKUP_DOWN = 'pickup_down',
-    PICKUP_WALKING_DOWN = 'pickup_down_walking',
-    IDLE_RIGHT = 'idle_right',
-    WALKING_RIGHT = 'walking_right',
-    PICKUP_RIGHT = 'pickup_right',
-    PICKUP_WALKING_RIGHT = 'pickup_right_walking',
-    IDLE_UP = 'idle_up',
-    WALKING_UP = 'walking_up',
-    PICKUP_UP = 'pickup_up',
-    PICKUP_WALKING_UP = 'pickup_walking_up',
-    IDLE_LEFT = 'idle_left',
-    WALKING_LEFT = 'walking_left',
-    PICKUP_LEFT = 'pickup_left',
-    PICKUP_WALKING_LEFT = 'pickup_left_walking',
-}
+export const PlayerAnimation = {
+    IDLE_DOWN: 'idle_down',
+    WALKING_DOWN: 'walking_down',
+    PICKUP_DOWN: 'pickup_down',
+    PICKUP_WALKING_DOWN: 'pickup_down_walking',
+    IDLE_RIGHT: 'idle_right',
+    WALKING_RIGHT: 'walking_right',
+    PICKUP_RIGHT: 'pickup_right',
+    PICKUP_WALKING_RIGHT: 'pickup_right_walking',
+    IDLE_UP: 'idle_up',
+    WALKING_UP: 'walking_up',
+    PICKUP_UP: 'pickup_up',
+    PICKUP_WALKING_UP: 'pickup_walking_up',
+    IDLE_LEFT: 'idle_left',
+    WALKING_LEFT: 'walking_left',
+    PICKUP_LEFT: 'pickup_left',
+    PICKUP_WALKING_LEFT: 'pickup_left_walking',
+};
 
 export const PLAYER_ANIMATION_KEYS = {
     WALK_DOWN: 'player_walk_down',
