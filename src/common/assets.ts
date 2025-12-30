@@ -7,6 +7,7 @@ export const ASSET_KEYS = {
     POT: 'POT',
     POT_BREAK: 'POT_BREAK',
     SPIDER: 'SPIDER',
+    SAW: 'SAW',
     WISP: 'WISP',
     DROW: 'DROW',
     DAGGER: 'DAGGER',
@@ -71,6 +72,10 @@ export const PlayerAnimation = {
     SWORD_1_ATTACK_UP: 'player_atk_1_up',
     SWORD_1_ATTACK_SIDE: 'player_atk_1_side',
 } as const; */
+
+export const SAW_ANIMATION_KEYS = {
+    WALK: 'saw_blade',
+};
 
 export const SPIDER_ANIMATION_KEYS = {
     WALK: 'spider_walk',

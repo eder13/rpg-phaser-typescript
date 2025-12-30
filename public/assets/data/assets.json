@@ -60,6 +60,17 @@
         ]
     },
     {
+        "path": "assets/images/enemies",
+        "files": [
+            {
+                "type": "aseprite",
+                "key": "SAW",
+                "textureURL": "saw.png",
+                "atlasURL": "saw.json"
+            }
+        ]
+    },
+    {
         "path": "assets/images/levels/common",
         "files": [
             {

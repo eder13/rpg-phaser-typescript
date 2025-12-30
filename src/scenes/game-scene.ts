@@ -6,10 +6,12 @@ import InputComponent from '../components/input-component/input';
 import KeyboardInput from '../components/input-component/keyboard';
 import Logger from '../common/logger';
 import Spider from '../game-objects/enemies/spider';
+import Saw from '../game-objects/enemies/saw';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
     spider!: Spider;
+    saw!: Saw;
     controls!: InputComponent;
 
     constructor() {
@@ -66,9 +68,23 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.spider.setCollideWorldBounds(true);
+
+        this.saw = new Saw({
+            scene: this,
+            position: {
+                x: this.scale.width / 2,
+                y: this.scale.height / 2 - 50,
+            },
+            assetKey: ASSET_KEYS.SAW,
+            frame: 0,
+            movement: new InputComponent(),
+        });
+
+        this.saw.setCollideWorldBounds(true);
     }
 
     update(): void {
         this.spider.update();
+        this.saw.update();
     }
 }
