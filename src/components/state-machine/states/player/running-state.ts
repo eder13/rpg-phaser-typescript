@@ -172,7 +172,7 @@ class RunningState extends BasePlayerState {
         }
 
         if (interactivecomponent.objectType === INTERACTIVE_OBJECT_TYPE.OPEN) {
-            this.stateMachine.setState(PlayerStates.OPEN_CHEST);
+            this.stateMachine.setState(PlayerStates.OPEN_CHEST, collidingObjectComponent);
             return true;
         }
 

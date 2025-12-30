@@ -3,6 +3,7 @@ import { ChestState, Position } from '../../common/types';
 import { ASSET_KEYS, CHEST_FRAME_KEYS } from '../../common/assets';
 import { CHEST_STATE, INTERACTIVE_OBJECT_TYPE } from '../../common/globals';
 import InteractiveObjectComponent from '../../components/game-object/interactive-object-compoent';
+import { EVENT_BUS, Events } from '../../common/events';
 
 type ChestConfig = {
     scene: Phaser.Scene;

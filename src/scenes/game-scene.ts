@@ -17,6 +17,7 @@ import {
 import { Pot } from '../game-objects/objects/pot';
 import { Chest } from '../game-objects/objects/chest';
 import { GameObject } from '../common/types';
+import { EVENT_BUS, Events } from '../common/events';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
@@ -134,6 +135,7 @@ export class GameScene extends Phaser.Scene {
         ]);
 
         this.registerColliders();
+        this.registerCustomEvents();
     }
 
     registerColliders() {
@@ -154,5 +156,18 @@ export class GameScene extends Phaser.Scene {
 
         // collision between enemies and objects
         this.physics.add.collider(this.enemyGroup, this.blockingGroup, () => {});
+    }
+
+    registerCustomEvents() {
+        EVENT_BUS.on(
+            Events.OPEN_CHEST,
+            (chest) => {
+                console.log('####** callback chest opened', chest);
+            },
+            this,
+        );
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+            EVENT_BUS.off(Events.OPEN_CHEST, () => {}, this);
+        });
     }
 }
