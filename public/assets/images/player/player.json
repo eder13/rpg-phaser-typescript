@@ -636,6 +636,7 @@
             { "name": "walking_down", "from": 0, "to": 3, "direction": "forward", "color": "#000000ff" },
             { "name": "idle_down", "from": 0, "to": 0, "direction": "forward", "color": "#000000ff" },
             { "name": "pickup_down", "from": 5, "to": 7, "direction": "forward", "color": "#000000ff" },
+            { "name": "hurt", "from": 6, "to": 6, "direction": "forward", "color": "#000000ff" },
             { "name": "pickup_down_walking", "from": 9, "to": 12, "direction": "forward", "color": "#000000ff" },
             { "name": "walking_right", "from": 17, "to": 20, "direction": "forward", "color": "#000000ff" },
             { "name": "idle_right", "from": 17, "to": 17, "direction": "forward", "color": "#000000ff" },

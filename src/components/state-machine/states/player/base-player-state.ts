@@ -1,3 +1,4 @@
+import Saw from '../../../../game-objects/enemies/saw';
 import Spider from '../../../../game-objects/enemies/spider';
 import Player from '../../../../game-objects/player/player';
 import StateMachine, { State } from '../../state-machine';
@@ -5,9 +6,9 @@ import StateMachine, { State } from '../../state-machine';
 class BasePlayerState implements State {
     stateMachine!: StateMachine;
     name: string;
-    gameObject: Player | Spider;
+    gameObject: Player | Spider | Saw;
 
-    constructor(name: string, gameObject: Player | Spider) {
+    constructor(name: string, gameObject: Player | Spider | Saw) {
         this.name = name;
         this.gameObject = gameObject;
     }

@@ -7,12 +7,17 @@ import KeyboardInput from '../components/input-component/keyboard';
 import Logger from '../common/logger';
 import Spider from '../game-objects/enemies/spider';
 import Saw from '../game-objects/enemies/saw';
+import {
+    PLAYER_HEALTH,
+    PLAYER_INVULNERABLE_DURATION,
+    SAW_INVULNERABLE_DURATION,
+    SPIDER_HEALTH,
+} from '../common/globals';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
-    spider!: Spider;
-    saw!: Saw;
     controls!: InputComponent;
+    enemyGroup!: Phaser.GameObjects.Group;
 
     constructor() {
         super({
@@ -54,37 +59,58 @@ export class GameScene extends Phaser.Scene {
             assetKey: ASSET_KEYS.PLAYER,
             frame: 0,
             playerMovement: this.controls,
+            isInvulnerable: false,
+            invulnerableDuration: PLAYER_INVULNERABLE_DURATION,
+            maxLife: PLAYER_HEALTH,
         });
 
-        this.spider = new Spider({
-            scene: this,
-            position: {
-                x: this.scale.width / 2,
-                y: this.scale.height / 2 + 50,
+        this.enemyGroup = this.add.group(
+            [
+                new Spider({
+                    scene: this,
+                    position: {
+                        x: this.scale.width / 2,
+                        y: this.scale.height / 2 + 50,
+                    },
+                    assetKey: ASSET_KEYS.SPIDER,
+                    frame: 0,
+                    movement: new InputComponent(),
+                    isInvulnerable: false,
+                    // no duration because spiders are weak enemies
+                    invulnerableDuration: 0,
+                    maxLife: SPIDER_HEALTH,
+                }),
+                new Saw({
+                    scene: this,
+                    position: {
+                        x: this.scale.width / 2,
+                        y: this.scale.height / 2 + 100,
+                    },
+                    assetKey: ASSET_KEYS.SAW,
+                    frame: 0,
+                    movement: new InputComponent(),
+                    isInvulnerable: true,
+                    invulnerableDuration: SAW_INVULNERABLE_DURATION,
+                }),
+            ],
+            {
+                // this way can remove the update function below
+                runChildUpdate: true,
             },
-            assetKey: ASSET_KEYS.SPIDER,
-            frame: 0,
-            movement: new InputComponent(),
-        });
+        );
 
-        this.spider.setCollideWorldBounds(true);
-
-        this.saw = new Saw({
-            scene: this,
-            position: {
-                x: this.scale.width / 2,
-                y: this.scale.height / 2 - 50,
-            },
-            assetKey: ASSET_KEYS.SAW,
-            frame: 0,
-            movement: new InputComponent(),
-        });
-
-        this.saw.setCollideWorldBounds(true);
+        this.registerColliders();
     }
 
-    update(): void {
-        this.spider.update();
-        this.saw.update();
+    registerColliders() {
+        this.enemyGroup.children.each((enemy) => {
+            const enemyTyped = enemy as Spider | Saw;
+            enemyTyped.setCollideWorldBounds(true);
+        });
+
+        // collision betweem player and other gameobjects
+        this.physics.add.overlap(this.player, this.enemyGroup, () => {
+            this.player.hit(1);
+        });
     }
 }

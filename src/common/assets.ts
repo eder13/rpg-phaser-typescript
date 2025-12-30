@@ -4,6 +4,7 @@ export const ASSET_PACK_KEYS = {
 
 export const ASSET_KEYS = {
     PLAYER: 'PLAYER',
+    PLAYER_DEATH: 'PLAYER_DEATH',
     POT: 'POT',
     POT_BREAK: 'POT_BREAK',
     SPIDER: 'SPIDER',
@@ -31,6 +32,8 @@ export const PlayerAnimation = {
     IDLE_DOWN: 'idle_down',
     WALKING_DOWN: 'walking_down',
     PICKUP_DOWN: 'pickup_down',
+    PLAYER_HURT: 'hurt',
+    PLAYER_DEATH: 'player_dead',
     PICKUP_WALKING_DOWN: 'pickup_down_walking',
     IDLE_RIGHT: 'idle_right',
     WALKING_RIGHT: 'walking_right',

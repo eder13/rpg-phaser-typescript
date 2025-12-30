@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 import { SCENE_KEYS } from './scene-keys';
-import { ASSET_KEYS, ASSET_PACK_KEYS } from '../common/assets';
+import { ASSET_KEYS, ASSET_PACK_KEYS, PlayerAnimation } from '../common/assets';
 
 export class PreloadScene extends Phaser.Scene {
     constructor() {
@@ -23,6 +23,17 @@ export class PreloadScene extends Phaser.Scene {
         this.anims.createFromAseprite(ASSET_KEYS.PLAYER);
         this.anims.createFromAseprite(ASSET_KEYS.SPIDER);
         this.anims.createFromAseprite(ASSET_KEYS.SAW);
+        //this.anims.createFromAseprite(ASSET_KEYS.PLAYER_DEATH);
+
+        this.anims.create({
+            key: PlayerAnimation.PLAYER_DEATH,
+            frames: this.anims.generateFrameNames('PLAYER_DEATH', {
+                start: 31,
+                end: 40,
+            }),
+            frameRate: 10,
+            repeat: -1,
+        });
 
         // list all entries of the animations -> check if it works
         console.log(this.anims.anims.entries);

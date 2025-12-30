@@ -58,11 +58,20 @@ class RunningState extends BasePlayerState {
             this.gameObject.controlsComponent.controls.isDownDown;
 
         if (this.gameObject.controlsComponent.controls.isLeftDown) {
+            if (DIRECTION.isMovingUp) {
+                DIRECTION.isMovingUpLeft = true;
+            }
+            if (DIRECTION.isMovingDown) {
+                DIRECTION.isMovingDownLeft = true;
+            }
+            DIRECTION.isMovingLeft = true;
+            DIRECTION.isMovingRight = false;
+            DIRECTION.isMovingDownRight = false;
+            DIRECTION.isMovingUpRight = false;
+
             if (!isMovingvertically) {
                 DIRECTION.isMovingDown = false;
                 DIRECTION.isMovingUp = false;
-                DIRECTION.isMovingLeft = true;
-                DIRECTION.isMovingRight = false;
 
                 this.gameObject.play(
                     {
@@ -75,11 +84,24 @@ class RunningState extends BasePlayerState {
 
             this.gameObject.updateVelocity(true, -1);
         } else if (this.gameObject.controlsComponent.controls.isRightDown) {
+            if (DIRECTION.isMovingUp) {
+                DIRECTION.isMovingUpRight = true;
+            }
+            if (DIRECTION.isMovingDown) {
+                DIRECTION.isMovingDownRight = true;
+            }
+            DIRECTION.isMovingRight = true;
+            DIRECTION.isMovingLeft = false;
+            DIRECTION.isMovingDownLeft = false;
+            DIRECTION.isMovingUpLeft = false;
+
             if (!isMovingvertically) {
+                DIRECTION.isMovingDownRight = false;
+                DIRECTION.isMovingUpRight = false;
+                DIRECTION.isMovingDownLeft = false;
+                DIRECTION.isMovingUpLeft = false;
                 DIRECTION.isMovingDown = false;
                 DIRECTION.isMovingUp = false;
-                DIRECTION.isMovingLeft = false;
-                DIRECTION.isMovingRight = true;
 
                 this.gameObject.play(
                     {

@@ -13,6 +13,8 @@ import {
 } from '../../common/globals';
 import IdleStateSpider from '../../components/state-machine/states/spider/idle-state';
 import RunningStateSpider from '../../components/state-machine/states/spider/running-state';
+import InvulnerableComponent from '../../components/game-object/invulnerable-component';
+import LifeComponent from '../../components/game-object/life-component';
 
 export interface SpiderConfig {
     scene: Phaser.Scene;
@@ -20,18 +22,27 @@ export interface SpiderConfig {
     assetKey: string;
     frame?: number;
     movement: InputComponent;
+    isInvulnerable?: boolean;
+    invulnerableDuration?: number;
+    maxLife: number;
 }
 
 class Spider extends Phaser.Physics.Arcade.Sprite {
     controlsComponent: ControlsComponent;
+    invulnerableComponent: InvulnerableComponent;
+    lifeComponent: LifeComponent;
     stateMachine: StateMachine;
 
+    isDefeated: boolean;
+
     constructor(config: SpiderConfig) {
-        const { scene, position, assetKey, frame, movement } = config;
+        const { scene, position, assetKey, frame, movement, isInvulnerable, invulnerableDuration, maxLife } = config;
         super(scene, position.x, position.y, assetKey, frame);
 
         // All the components that are used here.
         this.controlsComponent = new ControlsComponent(this, movement);
+        this.invulnerableComponent = new InvulnerableComponent(this, isInvulnerable, invulnerableDuration);
+        this.lifeComponent = new LifeComponent(this, maxLife);
 
         this.stateMachine = new StateMachine('spider');
         const idleState: IdleStateSpider = new IdleStateSpider(this);
@@ -39,6 +50,8 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
         this.stateMachine.addState(idleState);
         this.stateMachine.addState(runningState);
         this.stateMachine.setState(SpiderStates.IDLE);
+
+        this.isDefeated = false;
 
         this.scene.time.addEvent({
             delay: Phaser.Math.Between(500, 1500),
@@ -62,7 +75,7 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    private changeDirection() {
+    changeDirection() {
         this.controls.reset();
         this.scene.time.delayedCall(DELAY_SPIDER_CHANGE_DIRECTION_WAIT, () => {
             const randomDirection = Phaser.Math.Between(0, 3);
@@ -94,6 +107,10 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
 
     get controls() {
         return this.controlsComponent.controls;
+    }
+
+    get _isDefeated() {
+        return this.isDefeated;
     }
 
     public updateVelocity(isX: boolean, value: number) {

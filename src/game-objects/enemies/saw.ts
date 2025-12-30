@@ -6,6 +6,7 @@ import StateMachine from '../../components/state-machine/state-machine';
 import { SawStates } from '../../components/state-machine/states/player/player-states';
 import { TWEEN_DURATION, TWEEN_SCALE_X_PULSE, TWEEN_SCALE_Y_PULSE } from '../../common/globals';
 import BounceMoveState from '../../components/state-machine/states/saw/bounce-move-state';
+import InvulnerableComponent from '../../components/game-object/invulnerable-component';
 
 export interface SawConfig {
     scene: Phaser.Scene;
@@ -13,14 +14,17 @@ export interface SawConfig {
     assetKey: string;
     frame?: number;
     movement: InputComponent;
+    isInvulnerable?: boolean;
+    invulnerableDuration?: number;
 }
 
 class Saw extends Phaser.Physics.Arcade.Sprite {
     controlsComponent: ControlsComponent;
+    invulnerableComponent: InvulnerableComponent;
     stateMachine: StateMachine;
 
     constructor(config: SawConfig) {
-        const { scene, position, assetKey, frame, movement } = config;
+        const { scene, position, assetKey, frame, movement, isInvulnerable, invulnerableDuration } = config;
         super(scene, position.x, position.y, assetKey, frame);
 
         // add the Spider Object to the scene that we create here
@@ -30,6 +34,7 @@ class Saw extends Phaser.Physics.Arcade.Sprite {
 
         // All the components that are used here.
         this.controlsComponent = new ControlsComponent(this, movement);
+        this.invulnerableComponent = new InvulnerableComponent(this, isInvulnerable, invulnerableDuration);
 
         this.stateMachine = new StateMachine('saw');
         const bounceMoveState: BounceMoveState = new BounceMoveState(this);

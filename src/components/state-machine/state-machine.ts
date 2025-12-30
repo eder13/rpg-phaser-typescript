@@ -1,3 +1,4 @@
+import { LOG_ENABLED_STATE } from '../../common/globals';
 import Logger from '../../common/logger';
 
 export interface State {
@@ -39,13 +40,17 @@ class StateMachine {
 
     public setState(state: string, ...args: any[]) {
         if (!this.states.has(state)) {
-            Logger.error(`State "${state}" does not exist.`);
+            if (LOG_ENABLED_STATE) {
+                Logger.error(`State "${state}" does not exist.`);
+            }
             return;
         }
 
         const currentState = this.states.get(this?.currentState?.name ?? '');
         if (currentState?.name === state) {
-            Logger.warn(`State "${state}" is already active.`);
+            if (LOG_ENABLED_STATE) {
+                Logger.warn(`State "${state}" is already active.`);
+            }
             return;
         }
 
@@ -55,7 +60,9 @@ class StateMachine {
         }
 
         this.isChangingState = true;
-        Logger.info(`StateMachine "${this.currentState?.name}" changing state to "${state}".`);
+        if (LOG_ENABLED_STATE) {
+            Logger.info(`StateMachine "${this.currentState?.name}" changing state to "${state}".`);
+        }
         this.currentState = this.states.get(state);
 
         if (this.currentState?.onEnter) {

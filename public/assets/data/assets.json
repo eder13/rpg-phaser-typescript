@@ -60,6 +60,17 @@
         ]
     },
     {
+        "path": "assets/images/player",
+        "files": [
+            {
+                "type": "aseprite",
+                "key": "PLAYER_DEATH",
+                "textureURL": "player_death.png",
+                "atlasURL": "player_death.json"
+            }
+        ]
+    },
+    {
         "path": "assets/images/enemies",
         "files": [
             {
