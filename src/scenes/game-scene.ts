@@ -173,8 +173,11 @@ export class GameScene extends Phaser.Scene {
                 }
             },
             (enemy) => {
-                // dont collide if the enemy is a Saw
-                return enemy instanceof Saw ? false : true;
+                if (this.player.objectHeldComponent._object && this.player.objectHeldComponent._object instanceof Pot) {
+                    return enemy instanceof Saw ? false : true;
+                }
+
+                return true;
             },
         );
     }

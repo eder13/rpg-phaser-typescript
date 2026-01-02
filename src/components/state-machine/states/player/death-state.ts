@@ -16,6 +16,14 @@ class DeathStatePlayer extends BasePlayerState {
         this.gameObject.updateVelocity(true, 0);
         this.gameObject.updateVelocity(false, 0);
 
+        const heldGameObjectComponent = (this.gameObject as any).objectHeldComponent;
+        if (heldGameObjectComponent && heldGameObjectComponent._object) {
+            const throwableObjectComponent = heldGameObjectComponent._object.throwableObjectComponent;
+            if (throwableObjectComponent !== undefined) {
+                throwableObjectComponent?.drop?.();
+            }
+        }
+
         this.gameObject.invulnerableComponent.invulnerable = true;
 
         this.gameObject.play({

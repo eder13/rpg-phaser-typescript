@@ -27,6 +27,14 @@ class HurtState extends BasePlayerState {
         body.velocity.x = 0;
         body.velocity.y = 0;
 
+        const heldGameObjectComponent = (this.gameObject as any).objectHeldComponent;
+        if (heldGameObjectComponent && heldGameObjectComponent._object) {
+            const throwableObjectComponent = heldGameObjectComponent._object.throwableObjectComponent;
+            if (throwableObjectComponent !== undefined) {
+                throwableObjectComponent?.drop?.();
+            }
+        }
+
         if (attackDirection.isMovingUp) {
             body.velocity.y = this.hurtPushbackSpeed;
         } else if (attackDirection.isMovingDown) {
