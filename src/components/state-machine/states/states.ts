@@ -13,6 +13,7 @@ export enum PlayerStates {
 export enum SpiderStates {
     IDLE = 'IDLE',
     RUNNING = 'RUNNING',
+    HURT = 'HURT',
 }
 
 export enum SawStates {

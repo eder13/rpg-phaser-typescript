@@ -155,7 +155,23 @@ export class GameScene extends Phaser.Scene {
         });
 
         // collision between enemies and objects
-        this.physics.add.collider(this.enemyGroup, this.blockingGroup, () => {});
+        this.physics.add.collider(
+            this.enemyGroup,
+            this.blockingGroup,
+            (enemy, gameObject) => {
+                if (gameObject instanceof Pot) {
+                    const enemyGameObject = enemy as Spider | Saw;
+
+                    if (enemyGameObject instanceof Spider) {
+                        enemyGameObject.hit(2);
+                    }
+                }
+            },
+            (enemy, gameObject) => {
+                // dont collide if the enemy is a Saw
+                return enemy instanceof Saw ? false : true;
+            },
+        );
     }
 
     registerCustomEvents() {

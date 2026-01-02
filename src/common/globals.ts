@@ -45,6 +45,7 @@ export const PLAYER_INVULNERABLE_DURATION = 1000;
 export const SAW_INVULNERABLE_DURATION = Infinity;
 
 export const PUSH_BACK_SPEED = 100;
+export const SPIDER_HURT_PUSHBACK_SPEED = 50;
 export const DELAYED_PUSH_BACK_HURT_RESET = 200;
 
 export const PLAYER_HEALTH = 5;
@@ -61,3 +62,6 @@ export const INTERACTIVE_OBJECT_TYPE = {
     PICKUP: 'PICKUP',
     OPEN: 'OPEN',
 } as const;
+
+export const THROW_SPEED = 300;
+export const THROW_ITEM_DELAY_BEFORE_CALLBACK = 200;

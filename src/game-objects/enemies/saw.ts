@@ -37,8 +37,8 @@ class Saw extends Phaser.Physics.Arcade.Sprite {
         this.invulnerableComponent = new InvulnerableComponent(this, isInvulnerable, invulnerableDuration);
 
         this.stateMachine = new StateMachine('saw');
-        const bounceMoveState: BounceMoveState = new BounceMoveState(this);
-        this.stateMachine.addState(bounceMoveState);
+        //const bounceMoveState: BounceMoveState = new BounceMoveState(this);
+        //this.stateMachine.addState(bounceMoveState);
         this.stateMachine.setState(SawStates.BOUNCE_MOVE);
 
         this.scene.tweens.add({

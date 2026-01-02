@@ -10,11 +10,13 @@ import {
     DELAY_SPIDER_CHANGE_DIRECTION_WAIT,
     SPEED_PLAYER,
     SPEED_SPIDER,
+    SPIDER_HURT_PUSHBACK_SPEED,
 } from '../../common/globals';
 import IdleStateSpider from '../../components/state-machine/states/spider/idle-state';
 import RunningStateSpider from '../../components/state-machine/states/spider/running-state';
 import InvulnerableComponent from '../../components/game-object/invulnerable-component';
 import LifeComponent from '../../components/game-object/life-component';
+import HurtStateSpider from '../../components/state-machine/states/spider/hurt-state';
 
 export interface SpiderConfig {
     scene: Phaser.Scene;
@@ -46,10 +48,17 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
 
         this.stateMachine = new StateMachine('spider');
         const idleState: IdleStateSpider = new IdleStateSpider(this);
-        const runningState: RunningStateSpider = new RunningStateSpider(this);
+        //const runningState: RunningStateSpider = new RunningStateSpider(this);
         this.stateMachine.addState(idleState);
-        this.stateMachine.addState(runningState);
+        //this.stateMachine.addState(runningState);
         this.stateMachine.setState(SpiderStates.IDLE);
+        const hurtState: HurtStateSpider = new HurtStateSpider(
+            this,
+            SPIDER_HURT_PUSHBACK_SPEED,
+            undefined,
+            SpiderStates.RUNNING,
+        );
+        this.stateMachine.addState(hurtState);
 
         this.isDefeated = false;
 
@@ -123,6 +132,21 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
 
             this.body.velocity.normalize().scale(SPEED_SPIDER);
         }
+    }
+
+    public hit(damage: number) {
+        if (this.invulnerableComponent.invulnerable) {
+            return;
+        }
+        this.lifeComponent.takeDamage(damage);
+
+        if (this.lifeComponent.currentLives <= 0) {
+            this.isDefeated = true;
+            //this.stateMachine.setState(SpiderStates.DEFEATED);
+            // TODO: is defeated animation death
+        }
+
+        this.stateMachine.setState(SpiderStates.HURT);
     }
 }
 
