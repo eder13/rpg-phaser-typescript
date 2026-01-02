@@ -1,5 +1,5 @@
 import { PlayerAnimation } from '../../common/assets';
-import { GameObject, Position } from '../../common/types';
+import { CustomGameObject, GameObject, Position } from '../../common/types';
 import * as Phaser from 'phaser';
 import InputComponent from '../../components/input-component/input';
 import ControlsComponent from '../../components/game-object/controls-component';
@@ -32,12 +32,13 @@ export interface PlayerConfig {
     maxLife: number;
 }
 
-class Player extends Phaser.Physics.Arcade.Sprite {
+class Player extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
     controlsComponent: ControlsComponent;
     invulnerableComponent: InvulnerableComponent;
     lifeComponent: LifeComponent;
     stateMachine: StateMachine;
     collidingObjectComponent: CollidingObjectComponent;
+
     public objectHeldComponent: ObjectHeldComponent;
     isDefeated: boolean;
 
@@ -144,8 +145,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.stateMachine.setState(PlayerStates.HURT);
     }
 
-    public disableObject() {
+    public enableObject(): void {
+        (this.body as Phaser.Physics.Arcade.Body).enable = true;
+        this.visible = true;
+        this.active = true;
+    }
+
+    public disableObject(): void {
         (this.body as Phaser.Physics.Arcade.Body).enable = false;
+        this.visible = false;
         this.active = false;
     }
 

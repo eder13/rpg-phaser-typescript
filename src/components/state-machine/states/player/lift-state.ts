@@ -13,6 +13,9 @@ class LiftState extends BasePlayerState {
     onEnter(args?: unknown[]) {
         const gameObjectPickedUp = args?.[0] as GameObject | undefined;
 
+        console.log('[LiftState] enter', { time: Date.now(), player: this.gameObject, instanceofPlayer: this.gameObject instanceof Player });
+        console.log('[LiftState] setting held object ->', gameObjectPickedUp);
+
         this.gameObject.updateVelocity(true, 0);
         this.gameObject.updateVelocity(false, 0);
 
@@ -22,9 +25,9 @@ class LiftState extends BasePlayerState {
             return;
         }
         heldGameObjectComponent._object = gameObjectPickedUp;
-        (this.gameObject as any).objectHeldComponent._object = gameObjectPickedUp;
+        (this.gameObject as any).objectHeldComponent._object = heldGameObjectComponent._object;
 
-        console.log('#####** heldGameObjectComponent._object', (this.gameObject as any).objectHeldComponent);
+        console.log('[LiftState] after set held._object =', (this.gameObject as any).objectHeldComponent._object);
 
         if (gameObjectPickedUp?.body) {
             const body = gameObjectPickedUp.body as Phaser.Physics.Arcade.Body;

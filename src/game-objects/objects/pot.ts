@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { Position } from '../../common/types';
+import { CustomGameObject, Position } from '../../common/types';
 import { ASSET_KEYS } from '../../common/assets';
 import InteractiveObjectComponent from '../../components/game-object/interactive-object-compoent';
 import { INTERACTIVE_OBJECT_TYPE } from '../../common/globals';
@@ -10,7 +10,7 @@ type PotConfig = {
     position: Position;
 };
 
-export class Pot extends Phaser.Physics.Arcade.Sprite {
+export class Pot extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
     #position: Position;
     _interactiveObjectComponent: InteractiveObjectComponent;
     public throwableObjectComponent: ThrowableObjectComponent;
@@ -39,12 +39,32 @@ export class Pot extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    break() {
+    public disableObject() {
+        (this.body as Phaser.Physics.Arcade.Body).enable = false;
+        this.visible = false;
+        this.active = false;
+    }
+
+    public enableObject() {
+        (this.body as Phaser.Physics.Arcade.Body).enable = true;
+        this.visible = true;
+        this.active = true;
+    }
+
+    public break() {
+        console.log('***** Pot break called');
+
         (this.body as Phaser.Physics.Arcade.Body).enable = false;
         this.setTexture(ASSET_KEYS.POT_BREAK, 0).play(ASSET_KEYS.POT_BREAK);
-        this.once(Phaser.Animations.Events.ANIMATION_COMPLETE + ASSET_KEYS.POT_BREAK, () => {
-            // hide the pot
-            console.log('+++++ hide');
+
+        this.once(Phaser.Animations.Events.ANIMATION_COMPLETE, (animation: Phaser.Animations.Animation) => {
+            if (animation.key !== ASSET_KEYS.POT_BREAK) {
+                return;
+            }
+
+            console.log('***** Pot break animation complete - hiding');
+            this.setTexture(ASSET_KEYS.POT, 0);
+            this.disableObject();
         });
     }
 }

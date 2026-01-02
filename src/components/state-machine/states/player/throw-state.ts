@@ -10,6 +10,15 @@ class ThrowState extends BasePlayerState {
     }
 
     onEnter(args?: unknown[]) {
+        console.log('[ThrowState] enter', {
+            time: Date.now(),
+            player: this.gameObject,
+            instanceofPlayer: this.gameObject instanceof Player,
+        });
+        console.log('[ThrowState] objectHeldComponent', (this.gameObject as any).objectHeldComponent);
+        console.log('[ThrowState] held._object', (this.gameObject as any).objectHeldComponent?._object);
+        console.trace('[ThrowState] trace');
+
         this.gameObject.updateVelocity(true, 0);
         this.gameObject.updateVelocity(false, 0);
 
@@ -50,20 +59,21 @@ class ThrowState extends BasePlayerState {
 
         const heldGameObjectComponent = (this.gameObject as any).objectHeldComponent;
 
-        console.log('#####** this.gameObjects', this.gameObject);
-
         if (!heldGameObjectComponent || !heldGameObjectComponent._object) {
             return;
         }
-        const throwableObjectComponent = heldGameObjectComponent.throwableObjectComponent;
 
-        console.log('###### ++++++', heldGameObjectComponent);
+        console.log('#####** heldGameObjectComponent before throw', heldGameObjectComponent);
+
+        const throwableObjectComponent = heldGameObjectComponent._object.throwableObjectComponent;
 
         if (throwableObjectComponent !== undefined) {
-            throwableObjectComponent.throw();
+            console.log('####** inside throw!!');
+
+            throwableObjectComponent?.throw?.();
             return;
         }
-        heldGameObjectComponent.drop();
+        throwableObjectComponent?.drop?.();
     }
 
     onExit() {

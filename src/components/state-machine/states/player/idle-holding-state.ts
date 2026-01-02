@@ -61,7 +61,6 @@ class IdleHoldingState extends BasePlayerState {
         } */
 
         if (this.gameObject.controls.isActionKeyDown) {
-            // TODO: Throw State
             this.gameObject.stateMachine.setState(PlayerStates.THROW);
             return;
         }

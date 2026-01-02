@@ -23,7 +23,7 @@ export class PreloadScene extends Phaser.Scene {
         this.anims.createFromAseprite(ASSET_KEYS.PLAYER);
         this.anims.createFromAseprite(ASSET_KEYS.SPIDER);
         this.anims.createFromAseprite(ASSET_KEYS.SAW);
-        //this.anims.createFromAseprite(ASSET_KEYS.PLAYER_DEATH);
+        this.anims.createFromAseprite(ASSET_KEYS.POT_BREAK);
 
         this.anims.create({
             key: PlayerAnimation.PLAYER_DEATH,
@@ -33,6 +33,14 @@ export class PreloadScene extends Phaser.Scene {
             }),
             frameRate: 10,
             repeat: -1,
+        });
+        this.anims.create({
+            key: ASSET_KEYS.POT_BREAK,
+            frames: this.anims.generateFrameNames('POT_BREAK', {
+                start: 0,
+                end: 7,
+            }),
+            frameRate: 10,
         });
 
         // list all entries of the animations -> check if it works

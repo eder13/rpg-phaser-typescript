@@ -60,10 +60,7 @@ class MoveHoldingState extends BasePlayerState {
         }
 
         if (controls.isActionKeyDown) {
-            // TODO: Throw State
-            //this.gameObject.stateMachine.setState(PlayerStates.IDLE);
             this.gameObject.stateMachine.setState(PlayerStates.THROW);
-
             return;
         }
 
