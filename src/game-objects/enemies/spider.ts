@@ -17,6 +17,7 @@ import RunningStateSpider from '../../components/state-machine/states/spider/run
 import InvulnerableComponent from '../../components/game-object/invulnerable-component';
 import LifeComponent from '../../components/game-object/life-component';
 import HurtStateSpider from '../../components/state-machine/states/spider/hurt-state';
+import DeathStateSpider from '../../components/state-machine/states/spider/death-state';
 
 export interface SpiderConfig {
     scene: Phaser.Scene;
@@ -52,6 +53,11 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
         this.stateMachine.addState(idleState);
         //this.stateMachine.addState(runningState);
         this.stateMachine.setState(SpiderStates.IDLE);
+        const deathState: DeathStateSpider = new DeathStateSpider(this, () => {
+            this.isDefeated = true;
+        });
+
+        this.stateMachine.addState(deathState);
         const hurtState: HurtStateSpider = new HurtStateSpider(
             this,
             SPIDER_HURT_PUSHBACK_SPEED,
@@ -140,13 +146,21 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
         }
         this.lifeComponent.takeDamage(damage);
 
+        console.log('#####** Current Lives:', this.lifeComponent.currentLives);
+
         if (this.lifeComponent.currentLives <= 0) {
+            this.stateMachine.setState(SpiderStates.HURT);
             this.isDefeated = true;
-            //this.stateMachine.setState(SpiderStates.DEFEATED);
-            // TODO: is defeated animation death
+            this.stateMachine.setState(SpiderStates.DEATH);
         }
 
         this.stateMachine.setState(SpiderStates.HURT);
+    }
+
+    public disableObject() {
+        (this.body as Phaser.Physics.Arcade.Body).enable = false;
+        this.visible = false;
+        this.active = false;
     }
 }
 

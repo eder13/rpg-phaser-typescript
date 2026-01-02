@@ -167,7 +167,7 @@ export class GameScene extends Phaser.Scene {
                     }
                 }
             },
-            (enemy, gameObject) => {
+            (enemy) => {
                 // dont collide if the enemy is a Saw
                 return enemy instanceof Saw ? false : true;
             },

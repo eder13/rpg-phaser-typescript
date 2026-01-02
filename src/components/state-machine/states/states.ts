@@ -14,6 +14,7 @@ export enum SpiderStates {
     IDLE = 'IDLE',
     RUNNING = 'RUNNING',
     HURT = 'HURT',
+    DEATH = 'DEATH',
 }
 
 export enum SawStates {
