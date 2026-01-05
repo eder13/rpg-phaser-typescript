@@ -16,7 +16,7 @@ import {
 } from '../common/globals';
 import { Pot } from '../game-objects/objects/pot';
 import { Chest } from '../game-objects/objects/chest';
-import { GameObject, LevelData } from '../common/types';
+import { GameObject } from '../common/types';
 import { EVENT_BUS, Events } from '../common/events';
 import Fire from '../game-objects/objects/fire';
 
@@ -26,22 +26,12 @@ export class GameScene extends Phaser.Scene {
     enemyGroup!: Phaser.GameObjects.Group;
     blockingGroup!: Phaser.GameObjects.Group;
     fpsText!: HTMLElement | null;
-    levelData!: LevelData;
-
     private lastFpsUpdate = 0;
 
     constructor() {
         super({
             key: SCENE_KEYS.GAME_SCENE,
         });
-    }
-
-    public init(data): void {
-        this.fpsText = document.getElementById('fps');
-        this.initZoom();
-        console.log('#####** init data', data);
-
-        this.levelData = data;
     }
 
     private initZoom() {
@@ -60,19 +50,16 @@ export class GameScene extends Phaser.Scene {
     }
 
     public create(): void {
+        this.fpsText = document.getElementById('fps');
+
+        this.initZoom();
+
         if (!this.input.keyboard) {
-            //TODO show error message over the game and lock input
             Logger.error('Keyboard is not enabled!');
             return;
         }
+
         this.controls = new KeyboardInput(this.input.keyboard);
-
-        const map = this.make.tilemap({ key: `${this.levelData.level}_LEVEL` });
-
-        console.log('####** map tile data', map);
-
-        this.add.image(0, 0, `${this.levelData.level}_BACKGROUND`).setOrigin(0);
-        this.add.image(0, 0, `${this.levelData.level}_FOREGROUND`).setOrigin(0).setDepth(2);
 
         this.player = new Player({
             scene: this,
@@ -162,8 +149,6 @@ export class GameScene extends Phaser.Scene {
 
         this.registerColliders();
         this.registerCustomEvents();
-
-        this.cameras.main.startFollow(this.player);
     }
 
     update(time: number, delta: number): void {

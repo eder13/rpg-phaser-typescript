@@ -9,8 +9,8 @@
     ],
     "expandedProjectPaths": [
     ],
-    "exportAsImage.drawTileGrid": true,
-    "exportAsImage.includeBackgroundColor": true,
+    "exportAsImage.drawTileGrid": false,
+    "exportAsImage.includeBackgroundColor": false,
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
@@ -340,12 +340,12 @@
         }
     },
     "frame.defaultDuration": 500,
-    "last.exportedFilePath": "/Users/swestover/Desktop/legend_of_zelda_assets/tiled",
+    "last.exportedFilePath": "/Users/sranftl/private_projects/rpg-phaser-typescript/src/tilemap/levels",
     "last.imagePath": "/Users/sranftl/private_projects/rpg-phaser-typescript/src/tilemap/assets/aseprite",
     "last.objectTypesPath": "/Users/swestover/Desktop/legend_of_zelda_assets/tiled/propertytypes.json",
     "map.fixedSize": true,
     "map.height": 68,
-    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
