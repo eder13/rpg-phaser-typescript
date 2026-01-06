@@ -21,7 +21,7 @@ import { Chest } from '../game-objects/objects/chest';
 import { GameObject, LevelData } from '../common/types';
 import { EVENT_BUS, Events } from '../common/events';
 import Fire from '../game-objects/objects/fire';
-import { TiledRoomObject } from '../common/tiled/types';
+import { DIRECTION, TiledRoomObject } from '../common/tiled/types';
 import { TILED_LAYER_NAMES, TILED_TILESET_NAMES } from '../common/tiled/common';
 import {
     getAllLayerNamesWithPrefix,
@@ -34,6 +34,7 @@ import {
     getTiledSwitchObjectsFromMap,
 } from '../common/tiled/tiled-utils';
 import Door from '../game-objects/objects/door';
+import { getDirectionOfObjectFromAnotherObject } from '../common/utils';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
@@ -63,6 +64,7 @@ export class GameScene extends Phaser.Scene {
     enemyCollisionTilemap!: Phaser.Tilemaps.TilemapLayer;
     currentRoomId!: number;
     doorTransitionGroup!: Phaser.GameObjects.Group;
+    doorOverlapCollider!: Phaser.Physics.Arcade.Collider;
 
     private lastFpsUpdate = 0;
 
@@ -424,6 +426,10 @@ export class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.enemyGroup, this.enemyCollisionTilemap);
         this.enemyCollisionTilemap.setCollision(this.enemyCollisionTilemap.tileset[0].firstgid);
+
+        this.doorOverlapCollider = this.physics.add.overlap(this.player, this.doorTransitionGroup, (_, doorObject) => {
+            this.handleRoomTransition(doorObject as Phaser.Types.Physics.Arcade.GameObjectWithBody);
+        });
     }
 
     registerCustomEvents() {
@@ -437,5 +443,100 @@ export class GameScene extends Phaser.Scene {
         this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
             EVENT_BUS.off(Events.OPEN_CHEST, () => {}, this);
         });
+    }
+
+    handleRoomTransition(doorCollidedGameObject: Phaser.Types.Physics.Arcade.GameObjectWithBody) {
+        console.log('#####** door trigger', doorCollidedGameObject);
+        console.log(`Transitioning to door: ${doorCollidedGameObject.name}`);
+
+        const door = this.objectsByRoomId[this.currentRoomId].doorMap[Number(doorCollidedGameObject.name)];
+        console.log('#####** door', door);
+        const targetDoor = this.objectsByRoomId[door.targetRoomId].doorMap[door.targetDoorId];
+        console.log('#####** targetDoor', targetDoor);
+
+        // Disable collision for a short amount of time to "travel through" the door
+        door.disableObject();
+        targetDoor.disableObject();
+
+        this.doorOverlapCollider.active = false;
+        this.time.delayedCall(1500, () => {
+            if (this.doorOverlapCollider) {
+                this.doorOverlapCollider.active = true;
+            }
+        });
+
+        console.log('#####** door.direction', door.direction);
+        console.log('#####** targetDoor.direction', targetDoor.direction);
+
+        const targetDirection = getDirectionOfObjectFromAnotherObject(door.position, targetDoor.position);
+        console.log('#####** targetDirection', targetDirection);
+
+        const doorDistance = {
+            x: Math.abs((targetDoor.position.x - door.position.x) / 2),
+            y: Math.abs((targetDoor.position.y - door.position.y) / 2),
+        };
+
+        if (targetDirection === DIRECTION.LEFT) {
+            doorDistance.x = doorDistance.x * -1;
+        }
+
+        if (targetDirection === DIRECTION.UP) {
+            doorDistance.y = doorDistance.y * -1;
+        }
+
+        const playerNewPosition = {
+            x:
+                door.position.x +
+                door.doorTransitionZone.width / 2 +
+                doorDistance.x +
+                (targetDirection === DIRECTION.LEFT ? -50 : targetDirection === DIRECTION.RIGHT ? 50 : 0),
+            y:
+                (targetDirection === DIRECTION.LEFT
+                    ? door.position.y - door.doorTransitionZone.height / 2
+                    : targetDirection === DIRECTION.RIGHT
+                      ? door.position.y - door.doorTransitionZone.height / 2
+                      : door.position.y + door.doorTransitionZone.height / 2) +
+                doorDistance.y +
+                (targetDirection === DIRECTION.UP ? -60 : targetDirection === DIRECTION.DOWN ? 50 : 0),
+        };
+
+        this.tweens.add({
+            targets: this.player,
+            x: playerNewPosition.x,
+            y: playerNewPosition.y,
+            delay: 100,
+            duration: 500,
+            ease: 'Power2',
+        });
+
+        this.cameras.main.setBounds(
+            this.cameras.main.worldView.x,
+            this.cameras.main.worldView.y,
+            this.cameras.main.worldView.width,
+            this.cameras.main.worldView.height,
+        );
+
+        const roomSize = this.objectsByRoomId[targetDoor.roomid].room;
+        // reset camera bounds so we have a smooth transition
+        this.cameras.main.setBounds(
+            this.cameras.main.worldView.x,
+            this.cameras.main.worldView.y,
+            this.cameras.main.worldView.width,
+            this.cameras.main.worldView.height,
+        );
+        this.cameras.main.stopFollow();
+        const bounds = this.cameras.main.getBounds();
+        this.tweens.add({
+            targets: bounds,
+            x: roomSize.x,
+            y: roomSize.y - roomSize.height,
+            duration: 750,
+            delay: 100,
+            onUpdate: () => {
+                this.cameras.main.setBounds(bounds.x, bounds.y, roomSize.width, roomSize.height);
+            },
+        });
+
+        this.currentRoomId = targetDoor.roomid;
     }
 }

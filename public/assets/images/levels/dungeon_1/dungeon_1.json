@@ -3500,7 +3500,7 @@
                                         {
                                             "name": "targetDoorId",
                                             "type": "int",
-                                            "value": -1
+                                            "value": 2
                                         },
                                         {
                                             "name": "isLevelTransition",
@@ -3510,7 +3510,7 @@
                                         {
                                             "name": "targetRoomId",
                                             "type": "int",
-                                            "value": -1
+                                            "value": 2
                                         },
                                         {
                                             "name": "targetLevel",

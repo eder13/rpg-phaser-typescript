@@ -1,5 +1,5 @@
 import { Direction, TiledDoorObject } from '../../common/tiled/types';
-import { CustomGameObject, GameObject, Position } from '../../common/types';
+import { CustomGameObject, Position } from '../../common/types';
 
 class Door implements CustomGameObject {
     public scene: Phaser.Scene;
@@ -42,13 +42,17 @@ class Door implements CustomGameObject {
     }
 
     public enableObject(): void {
-        (this.doorTransitionZone as any).body?.setEnable(true);
-        (this.doorTransitionZone as any).body?.setActive(true);
+        console.log('#####** Enabling door transition zone for door id:', this.doorTransitionZone.name);
+        (this.doorTransitionZone as any).body.enabled = true;
+        (this.doorTransitionZone as any).body.active = true;
+        (this.doorTransitionZone as any).body.visible = true;
     }
 
     public disableObject(): void {
-        (this.doorTransitionZone as any).body?.setEnable(false);
-        (this.doorTransitionZone as any).body?.setActive(false);
+        console.log('#####** Disabling door transition zone for door id:', this.doorTransitionZone.name);
+        (this.doorTransitionZone as any).body.enabled = false;
+        (this.doorTransitionZone as any).body.active = false;
+        (this.doorTransitionZone as any).body.visible = false;
     }
 }
 
