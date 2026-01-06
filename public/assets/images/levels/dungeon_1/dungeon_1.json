@@ -1876,6 +1876,28 @@
                                             "name": "targetRoomId",
                                             "type": "int",
                                             "value": 4
+                                        },
+                                        {
+                                            "name": "doorType",
+                                            "propertytype": "doorType",
+                                            "type": "string",
+                                            "value": "OPEN"
+                                        },
+                                        {
+                                            "name": "trapDoorTrigger",
+                                            "propertytype": "trapTrigger",
+                                            "type": "string",
+                                            "value": "NONE"
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
                                         }
                                     ],
                                     "rotation": 0,
@@ -2124,6 +2146,22 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "ENEMIES_DEFEATED"
+                                        },
+                                        {
+                                            "name": "direction",
+                                            "propertytype": "direction",
+                                            "type": "string",
+                                            "value": "DOWN"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -2379,6 +2417,22 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "SWITCH"
+                                        },
+                                        {
+                                            "name": "direction",
+                                            "propertytype": "direction",
+                                            "type": "string",
+                                            "value": "DOWN"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -2426,6 +2480,16 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "SWITCH"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -2603,6 +2667,16 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "ENEMIES_DEFEATED"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -2618,6 +2692,12 @@
                                     "id": 15,
                                     "name": "",
                                     "properties": [
+                                        {
+                                            "name": "doorType",
+                                            "propertytype": "doorType",
+                                            "type": "string",
+                                            "value": "OPEN"
+                                        },
                                         {
                                             "name": "direction",
                                             "propertytype": "direction",
@@ -2644,6 +2724,16 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "ENEMIES_DEFEATED"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -2685,6 +2775,22 @@
                                             "name": "targetRoomId",
                                             "type": "int",
                                             "value": 7
+                                        },
+                                        {
+                                            "name": "trapDoorTrigger",
+                                            "propertytype": "trapTrigger",
+                                            "type": "string",
+                                            "value": "NONE"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -2810,6 +2916,12 @@
                                     "name": "",
                                     "properties": [
                                         {
+                                            "name": "doorType",
+                                            "propertytype": "doorType",
+                                            "type": "string",
+                                            "value": "OPEN"
+                                        },
+                                        {
                                             "name": "direction",
                                             "propertytype": "direction",
                                             "type": "string",
@@ -2829,6 +2941,22 @@
                                             "name": "targetRoomId",
                                             "type": "int",
                                             "value": 2
+                                        },
+                                        {
+                                            "name": "trapDoorTrigger",
+                                            "propertytype": "trapTrigger",
+                                            "type": "string",
+                                            "value": "NONE"
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
                                         }
                                     ],
                                     "rotation": 0,
@@ -2854,7 +2982,7 @@
                                             "name": "doorType",
                                             "propertytype": "doorType",
                                             "type": "string",
-                                            "value": "LOCK"
+                                            "value": "OPEN"
                                         },
                                         {
                                             "name": "id",
@@ -2870,6 +2998,22 @@
                                             "name": "targetRoomId",
                                             "type": "int",
                                             "value": 4
+                                        },
+                                        {
+                                            "name": "trapDoorTrigger",
+                                            "propertytype": "trapTrigger",
+                                            "type": "string",
+                                            "value": "NONE"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -3187,6 +3331,22 @@
                                             "name": "targetRoomId",
                                             "type": "int",
                                             "value": 1
+                                        },
+                                        {
+                                            "name": "trapDoorTrigger",
+                                            "propertytype": "trapTrigger",
+                                            "type": "string",
+                                            "value": "NONE"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
@@ -3228,6 +3388,22 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "SWITCH"
+                                        },
+                                        {
+                                            "name": "direction",
+                                            "propertytype": "direction",
+                                            "type": "string",
+                                            "value": "DOWN"
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,
