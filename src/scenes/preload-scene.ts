@@ -20,7 +20,7 @@ export class PreloadScene extends Phaser.Scene {
         const levelData: LevelData = {
             level: LEVEL_NAME.DUNGEON_1,
             doorId: 1,
-            roomId: 3,
+            roomId: 1,
         };
 
         this.createAnimations();

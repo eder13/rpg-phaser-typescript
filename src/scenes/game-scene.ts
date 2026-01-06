@@ -9,6 +9,7 @@ import Spider from '../game-objects/enemies/spider';
 import Saw from '../game-objects/enemies/saw';
 import {
     CHEST_STATE,
+    DEBUG_COLLISION_ENEMY_TILEMAP,
     DEBUG_COLLISION_PLAYER_TILEMAP,
     PLAYER_HEALTH,
     PLAYER_INVULNERABLE_DURATION,
@@ -32,6 +33,7 @@ import {
     getTiledRoomObjectsFromMap,
     getTiledSwitchObjectsFromMap,
 } from '../common/tiled/tiled-utils';
+import Door from '../game-objects/objects/door';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
@@ -46,9 +48,9 @@ export class GameScene extends Phaser.Scene {
                 [key: number]: Chest;
             };
             doorMap: {
-                [key: number]: unknown;
+                [key: number]: Door;
             };
-            doors: unknown[];
+            doors: Door[];
             switches: unknown[];
             pots: Pot[];
             chests: Chest[];
@@ -58,6 +60,9 @@ export class GameScene extends Phaser.Scene {
         };
     };
     collisionsTilemap!: Phaser.Tilemaps.TilemapLayer;
+    enemyCollisionTilemap!: Phaser.Tilemaps.TilemapLayer;
+    currentRoomId!: number;
+    doorTransitionGroup!: Phaser.GameObjects.Group;
 
     private lastFpsUpdate = 0;
 
@@ -73,6 +78,7 @@ export class GameScene extends Phaser.Scene {
         console.log('#####** init data', data);
 
         this.levelData = data;
+        this.currentRoomId = data.roomId;
     }
 
     private initZoom() {
@@ -101,6 +107,8 @@ export class GameScene extends Phaser.Scene {
 
         const collisionTiles = map.addTilesetImage(TILED_TILESET_NAMES.COLLISION, ASSET_KEYS.COLLISION);
 
+        console.log('#####** collisionTiles', collisionTiles);
+
         const collisionLayer = map.createLayer(
             TILED_LAYER_NAMES.COLLISION,
             collisionTiles ? [collisionTiles] : [],
@@ -116,17 +124,26 @@ export class GameScene extends Phaser.Scene {
 
         this.collisionsTilemap = collisionLayer;
 
-        // Stelle sicher, dass die Kamera auf 0/0 gescrollt ist
+        const enemyCollisionsTilemap = map.createLayer(
+            TILED_LAYER_NAMES.ENEMY_COLLISION,
+            collisionTiles ? [collisionTiles] : [],
+            0,
+            0,
+        );
+
+        if (!enemyCollisionsTilemap) {
+            return;
+        }
+
+        enemyCollisionsTilemap.setDepth(DEBUG_COLLISION_ENEMY_TILEMAP ? 3 : -1);
+
+        this.enemyCollisionTilemap = enemyCollisionsTilemap;
+
         this.cameras.main.setScroll(0, 0);
 
-        // Log: wie viele non-zero Tiles insgesamt (nochmal)
-        let nonZero = 0;
-        collisionLayer.forEachTile((tile) => {
-            if (tile.index > 0) nonZero++;
-        });
-        console.log('collisionLayer non-zero tiles count (debug):', nonZero);
-
         this.objectsByRoomId = {};
+
+        this.doorTransitionGroup = this.add.group([]);
 
         this.createRoomObjects(map, TILED_LAYER_NAMES.ROOMS);
 
@@ -143,6 +160,8 @@ export class GameScene extends Phaser.Scene {
         const enemyLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.ENEMIES}`));
         const chestLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.CHESTS}`));
         const doorLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.DOORS}`));
+
+        console.log('#####** doorLayerNames', doorLayerNames);
 
         switchLayerNames.forEach((layer) => {
             this.createSwitches(map, layer.name, layer.roomId);
@@ -165,6 +184,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         doorLayerNames.forEach((layer) => {
+            console.log('#####** layerDoor', layer);
             this.createDoors(map, layer.name, layer.roomId);
         });
 
@@ -174,8 +194,8 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({
             scene: this,
             position: {
-                x: this.scale.width / 2,
-                y: this.scale.height / 2,
+                x: this.scale.width / 2 - 12,
+                y: this.scale.height / 2 + 100,
             },
             assetKey: ASSET_KEYS.PLAYER,
             frame: 0,
@@ -190,7 +210,7 @@ export class GameScene extends Phaser.Scene {
                 new Spider({
                     scene: this,
                     position: {
-                        x: this.scale.width / 2,
+                        x: this.scale.width / 2 - 12,
                         y: this.scale.height / 2 + 50,
                     },
                     assetKey: ASSET_KEYS.SPIDER,
@@ -260,6 +280,8 @@ export class GameScene extends Phaser.Scene {
         this.registerColliders();
         this.registerCustomEvents();
 
+        const room = this.objectsByRoomId[this.currentRoomId].room;
+        this.cameras.main.setBounds(room.x, room.y - room.height, room.width, room.height);
         this.cameras.main.startFollow(this.player);
     }
 
@@ -293,6 +315,13 @@ export class GameScene extends Phaser.Scene {
     createDoors(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
         const tiledDoorObjects = getTiledDoorObjectsFromMap(map, layerName);
         console.log('[Doors] tiledDoorObjects', tiledDoorObjects);
+
+        tiledDoorObjects.forEach((tiledDoor) => {
+            const door = new Door(this, tiledDoor, roomId);
+            this.objectsByRoomId[roomId].doors.push(door);
+            this.objectsByRoomId[roomId].doorMap[tiledDoor.id] = door;
+            this.doorTransitionGroup.add(door.doorTransitionZone);
+        });
     }
 
     createPots(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
@@ -392,6 +421,9 @@ export class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.collisionsTilemap);
         this.collisionsTilemap.setCollision(this.collisionsTilemap.tileset[0].firstgid);
+
+        this.physics.add.collider(this.enemyGroup, this.enemyCollisionTilemap);
+        this.enemyCollisionTilemap.setCollision(this.enemyCollisionTilemap.tileset[0].firstgid);
     }
 
     registerCustomEvents() {

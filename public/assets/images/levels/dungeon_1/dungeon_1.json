@@ -1307,7 +1307,7 @@
             ],
             "height": 68,
             "id": 10,
-            "locked": true,
+            "locked": false,
             "name": "enemy_collision",
             "opacity": 0.59,
             "type": "tilelayer",
@@ -3314,6 +3314,32 @@
                                             "propertytype": "trapTrigger",
                                             "type": "string",
                                             "value": "NONE"
+                                        },
+                                        {
+                                            "name": "direction",
+                                            "propertytype": "direction",
+                                            "type": "string",
+                                            "value": "DOWN"
+                                        },
+                                        {
+                                            "name": "targetDoorId",
+                                            "type": "int",
+                                            "value": -1
+                                        },
+                                        {
+                                            "name": "isLevelTransition",
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        {
+                                            "name": "targetRoomId",
+                                            "type": "int",
+                                            "value": -1
+                                        },
+                                        {
+                                            "name": "targetLevel",
+                                            "type": "string",
+                                            "value": ""
                                         }
                                     ],
                                     "rotation": 0,

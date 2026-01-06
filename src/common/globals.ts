@@ -1,6 +1,7 @@
 export const LOG_ENABLED_STATE = false;
 
-export const DEBUG_COLLISION_PLAYER_TILEMAP = false;
+export const DEBUG_COLLISION_PLAYER_TILEMAP = true;
+export const DEBUG_COLLISION_ENEMY_TILEMAP = false;
 
 export const DIRECTION = {
     isMovingRight: false,

@@ -6,7 +6,7 @@ export const TILED_LAYER_NAMES = {
     ROOMS: 'rooms',
     SWITCHES: 'switches',
     POTS: 'pots',
-    DOORS: 'doors',
+    DOORS: 'door',
     CHESTS: 'chests',
     ENEMIES: 'enemies',
     COLLISION: 'collision',

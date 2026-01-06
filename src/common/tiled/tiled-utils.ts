@@ -168,6 +168,9 @@ export function getTiledDoorObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerNa
 
     // loop through each object and validate object has properties for the object we are planning to build
     const tiledObjects = getTiledObjectsFromLayer(map, layerName);
+
+    console.log('#####** tiledObjects loop getTiledDoorObjectsFromMap', tiledObjects);
+
     tiledObjects.forEach((tiledObject) => {
         const doorId = getTiledPropertyByName<number>(tiledObject.properties, TILED_DOOR_OBJECT_PROPERTY.ID);
         const targetDoorId = getTiledPropertyByName<number>(
@@ -195,6 +198,21 @@ export function getTiledDoorObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerNa
             tiledObject.properties,
             TILED_DOOR_OBJECT_PROPERTY.TARGET_ROOM_ID,
         );
+
+        console.log('#####** CurrentObject', tiledObject);
+
+        console.log('#####** doorId', doorId);
+        console.log('#####** targetDoorId', targetDoorId);
+        console.log('#####** doorDirection', doorDirection);
+        console.log('#####** doorType', doorType);
+        console.log('#####** trapDoorType', trapDoorType);
+        console.log('#####** isLevelTransition', isLevelTransition);
+        console.log('#####** targetLevel', targetLevel);
+        console.log('#####** targetRoomId', targetRoomId);
+        console.log('#####** !isDirection(doorDirection)', !isDirection(doorDirection ?? ''));
+        console.log('#####** !isDoorType(doorType)', !isDoorType(doorType ?? ''));
+        console.log('#####** !isTrapType(trapDoorType)', !isTrapType(trapDoorType ?? ''));
+
         if (
             doorId === undefined ||
             targetDoorId === undefined ||
