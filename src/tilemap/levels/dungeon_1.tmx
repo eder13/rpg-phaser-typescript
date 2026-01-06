@@ -15,10 +15,10 @@
  <tileset firstgid="1680" name="pot" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="../assets/aseprite/pot.aseprite" width="16" height="16"/>
  </tileset>
- <imagelayer id="2" name="guide" visible="0" opacity="0.58">
+ <imagelayer id="2" name="guide" opacity="0.58">
   <image source="../tiled/example/template_rooms.bmp" width="1920" height="1088"/>
  </imagelayer>
- <layer id="6" name="background" width="120" height="68" visible="0">
+ <layer id="6" name="background" width="120" height="68">
   <data encoding="csv">
 22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,99,100,22,186,186,22,99,100,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -90,7 +90,7 @@
 22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,2684354582,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22
 </data>
  </layer>
- <layer id="7" name="foreground-layout" width="120" height="68" visible="0">
+ <layer id="7" name="foreground-layout" width="120" height="68">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -415,8 +415,8 @@
    </properties>
   </object>
  </objectgroup>
- <group id="12" name="rooms" visible="0">
-  <group id="13" name="7" opacity="0.93">
+ <group id="12" name="rooms">
+  <group id="13" name="7" visible="0" opacity="0.93">
    <objectgroup id="46" name="enemies">
     <object id="71" type="enemy" gid="1" x="1616" y="864" width="16" height="16">
      <properties>
@@ -477,6 +477,7 @@
      <properties>
       <property name="contents" propertytype="chestRewards" value="BOSS_KEY"/>
       <property name="id" type="int" value="1"/>
+      <property name="requiresBossKey" type="bool" value="false"/>
       <property name="revealChestTrigger" propertytype="trapTrigger" value="SWITCH"/>
      </properties>
     </object>
@@ -485,14 +486,16 @@
       <property name="contents" propertytype="chestRewards" value="NOTHING"/>
       <property name="id" type="int" value="2"/>
       <property name="requiresBossKey" type="bool" value="true"/>
+      <property name="revealChestTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="28" name="switches" visible="0">
+   <objectgroup id="28" name="switches">
     <object id="23" type="switch" gid="1" x="1328" y="928" width="16" height="16">
      <properties>
       <property name="action" propertytype="switchAction" value="REVEAL_CHEST"/>
       <property name="targetIds" value="1"/>
+      <property name="texture" propertytype="switchTexture" value="PLATE"/>
      </properties>
     </object>
    </objectgroup>
@@ -500,14 +503,17 @@
     <object id="20" type="door" gid="1" x="1304.54" y="879.509" width="8" height="32">
      <properties>
       <property name="direction" propertytype="direction" value="LEFT"/>
+      <property name="doorType" propertytype="doorType" value="OPEN"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="2"/>
       <property name="targetRoomId" type="int" value="4"/>
+      <property name="trapDoorTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
    </objectgroup>
   </group>
-  <group id="14" name="6">
+  <group id="14" name="6" visible="0">
    <objectgroup id="45" name="enemies">
     <object id="68" type="enemy" gid="1" x="944" y="240" width="16" height="16">
      <properties>
@@ -530,7 +536,9 @@
    <objectgroup id="30" name="chests">
     <object id="26" type="chest" gid="492" x="960" y="64" width="16" height="16">
      <properties>
+      <property name="contents" propertytype="chestRewards" value="SMALL_KEY"/>
       <property name="id" type="int" value="2"/>
+      <property name="requiresBossKey" type="bool" value="false"/>
       <property name="revealChestTrigger" propertytype="trapTrigger" value="ENEMIES_DEFEATED"/>
      </properties>
     </object>
@@ -538,14 +546,18 @@
      <properties>
       <property name="contents" propertytype="chestRewards" value="NOTHING"/>
       <property name="id" type="int" value="1"/>
+      <property name="requiresBossKey" type="bool" value="false"/>
+      <property name="revealChestTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
    </objectgroup>
    <objectgroup id="26" name="door">
     <object id="18" type="door" gid="1" x="943.668" y="327.865" width="32" height="8">
      <properties>
+      <property name="direction" propertytype="direction" value="DOWN"/>
       <property name="doorType" propertytype="doorType" value="TRAP"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="2"/>
       <property name="targetRoomId" type="int" value="5"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="ENEMIES_DEFEATED"/>
@@ -554,7 +566,7 @@
    </objectgroup>
   </group>
   <group id="15" name="5">
-   <objectgroup id="44" name="enemies">
+   <objectgroup id="44" name="enemies" visible="0">
     <object id="64" type="enemy" gid="1" x="848" y="496" width="16" height="16">
      <properties>
       <property name="type" type="int" value="2"/>
@@ -576,25 +588,28 @@
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="35" name="pots">
+   <objectgroup id="35" name="pots" visible="0">
     <object id="38" gid="1" x="688" y="416" width="16" height="16"/>
     <object id="39" gid="1" x="1216" y="416" width="16" height="16"/>
     <object id="40" gid="1" x="688" y="672" width="16" height="16"/>
     <object id="41" gid="1" x="1216" y="672" width="16" height="16"/>
    </objectgroup>
-   <objectgroup id="34" name="switches" visible="0">
+   <objectgroup id="34" name="switches">
     <object id="37" type="switch" gid="1" x="688" y="416" width="16" height="16">
      <properties>
       <property name="action" propertytype="switchAction" value="OPEN_DOOR"/>
       <property name="targetIds" value="1,2"/>
+      <property name="texture" propertytype="switchTexture" value="FLOOR"/>
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="25" name="door">
+   <objectgroup id="25" name="door" visible="0">
     <object id="16" type="door" gid="1" x="1087.5" y="694.801" width="32" height="8">
      <properties>
+      <property name="direction" propertytype="direction" value="DOWN"/>
       <property name="doorType" propertytype="doorType" value="TRAP"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="3"/>
       <property name="targetRoomId" type="int" value="4"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="SWITCH"/>
@@ -605,6 +620,7 @@
       <property name="direction" propertytype="direction" value="UP"/>
       <property name="doorType" propertytype="doorType" value="TRAP"/>
       <property name="id" type="int" value="2"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="6"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="SWITCH"/>
@@ -612,7 +628,7 @@
     </object>
    </objectgroup>
   </group>
-  <group id="16" name="4">
+  <group id="16" name="4" visible="0">
    <objectgroup id="43" name="enemies">
     <object id="58" type="enemy" gid="1" x="832" y="912" width="16" height="16">
      <properties>
@@ -646,6 +662,7 @@
       <property name="direction" propertytype="direction" value="UP"/>
       <property name="doorType" propertytype="doorType" value="TRAP"/>
       <property name="id" type="int" value="3"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="5"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="ENEMIES_DEFEATED"/>
@@ -654,7 +671,9 @@
     <object id="15" type="door" gid="1" x="664.042" y="926.836" width="8" height="32">
      <properties>
       <property name="direction" propertytype="direction" value="LEFT"/>
+      <property name="doorType" propertytype="doorType" value="OPEN"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="2"/>
       <property name="targetRoomId" type="int" value="3"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="ENEMIES_DEFEATED"/>
@@ -665,13 +684,15 @@
       <property name="direction" propertytype="direction" value="RIGHT"/>
       <property name="doorType" propertytype="doorType" value="LOCK"/>
       <property name="id" type="int" value="2"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="7"/>
+      <property name="trapDoorTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
    </objectgroup>
   </group>
-  <group id="17" name="3">
+  <group id="17" name="3" visible="0">
    <objectgroup id="42" name="enemies">
     <object id="56" type="enemy" gid="1" x="464" y="848" width="16" height="16">
      <properties>
@@ -692,9 +713,12 @@
     <object id="12" type="door" gid="1" x="144.462" y="750.978" width="32" height="8">
      <properties>
       <property name="direction" propertytype="direction" value="UP"/>
+      <property name="doorType" propertytype="doorType" value="OPEN"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="2"/>
+      <property name="trapDoorTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
     <object id="13" type="door" gid="1" x="608.531" y="925.87" width="8" height="32">
@@ -704,12 +728,13 @@
       <property name="id" type="int" value="2"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="4"/>
+      <property name="trapDoorTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
    </objectgroup>
   </group>
   <group id="18" name="2">
-   <objectgroup id="41" name="enemies">
+   <objectgroup id="41" name="enemies" visible="0">
     <object id="52" type="enemy" gid="1" x="176" y="576" width="16" height="16">
      <properties>
       <property name="type" type="int" value="2"/>
@@ -731,7 +756,7 @@
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="33" name="pots">
+   <objectgroup id="33" name="pots" visible="0">
     <object id="34" gid="1" x="128" y="672" width="16" height="16"/>
     <object id="35" gid="1" x="176" y="672" width="16" height="16"/>
     <object id="36" gid="1" x="480" y="432" width="16" height="16"/>
@@ -739,13 +764,18 @@
    <objectgroup id="31" name="chests">
     <object id="31" type="chest" gid="492" x="224" y="432" width="16" height="16">
      <properties>
+      <property name="contents" propertytype="chestRewards" value="SMALL_KEY"/>
       <property name="id" type="int" value="1"/>
+      <property name="requiresBossKey" type="bool" value="false"/>
+      <property name="revealChestTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
    </objectgroup>
    <objectgroup id="27" name="switches">
     <object id="21" type="switch" gid="1" x="96" y="592" width="16" height="16">
      <properties>
+      <property name="action" propertytype="switchAction" value="NOTHING"/>
+      <property name="targetIds" value=""/>
       <property name="texture" propertytype="switchTexture" value="FLOOR"/>
      </properties>
     </object>
@@ -757,20 +787,24 @@
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="23" name="door">
+   <objectgroup id="23" name="door" visible="0">
     <object id="10" type="door" gid="1" x="287.296" y="382.864" width="32" height="8">
      <properties>
       <property name="direction" propertytype="direction" value="UP"/>
       <property name="doorType" propertytype="doorType" value="BOSS"/>
       <property name="id" type="int" value="2"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="1"/>
+      <property name="trapDoorTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>
     <object id="11" type="door" gid="1" x="143.572" y="695.1" width="32" height="8">
      <properties>
+      <property name="direction" propertytype="direction" value="DOWN"/>
       <property name="doorType" propertytype="doorType" value="TRAP"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="3"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="SWITCH"/>
@@ -778,7 +812,7 @@
     </object>
    </objectgroup>
   </group>
-  <group id="19" name="1">
+  <group id="19" name="1" visible="0">
    <objectgroup id="40" name="enemies">
     <object id="51" type="enemy" gid="1" x="288" y="160" width="16" height="16">
      <properties>
@@ -789,8 +823,12 @@
    <objectgroup id="24" name="door" class="door">
     <object id="9" type="door" gid="1" x="287.771" y="327.908" width="32" height="8">
      <properties>
+      <property name="direction" propertytype="direction" value="DOWN"/>
       <property name="doorType" propertytype="doorType" value="TRAP"/>
       <property name="id" type="int" value="1"/>
+      <property name="isLevelTransition" type="bool" value="false"/>
+      <property name="targetDoorId" type="int" value="0"/>
+      <property name="targetRoomId" type="int" value="0"/>
       <property name="trapDoorTrigger" propertytype="trapTrigger" value="NONE"/>
      </properties>
     </object>

@@ -9,6 +9,7 @@ import Spider from '../game-objects/enemies/spider';
 import Saw from '../game-objects/enemies/saw';
 import {
     CHEST_STATE,
+    DEBUG_COLLISION_PLAYER_TILEMAP,
     PLAYER_HEALTH,
     PLAYER_INVULNERABLE_DURATION,
     SAW_INVULNERABLE_DURATION,
@@ -19,6 +20,18 @@ import { Chest } from '../game-objects/objects/chest';
 import { GameObject, LevelData } from '../common/types';
 import { EVENT_BUS, Events } from '../common/events';
 import Fire from '../game-objects/objects/fire';
+import { TiledRoomObject } from '../common/tiled/types';
+import { TILED_LAYER_NAMES, TILED_TILESET_NAMES } from '../common/tiled/common';
+import {
+    getAllLayerNamesWithPrefix,
+    getTiledChestObjectsFromMap,
+    getTiledDoorObjectsFromMap,
+    getTiledEnemyObjectsFromMap,
+    getTiledFireObjectsFromMap,
+    getTiledPotObjectsFromMap,
+    getTiledRoomObjectsFromMap,
+    getTiledSwitchObjectsFromMap,
+} from '../common/tiled/tiled-utils';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
@@ -27,6 +40,24 @@ export class GameScene extends Phaser.Scene {
     blockingGroup!: Phaser.GameObjects.Group;
     fpsText!: HTMLElement | null;
     levelData!: LevelData;
+    objectsByRoomId!: {
+        [key: number]: {
+            chestMap: {
+                [key: number]: Chest;
+            };
+            doorMap: {
+                [key: number]: unknown;
+            };
+            doors: unknown[];
+            switches: unknown[];
+            pots: Pot[];
+            chests: Chest[];
+            fire: Fire[];
+            enemyGroup?: Phaser.GameObjects.Group;
+            room: TiledRoomObject;
+        };
+    };
+    collisionsTilemap!: Phaser.Tilemaps.TilemapLayer;
 
     private lastFpsUpdate = 0;
 
@@ -46,7 +77,6 @@ export class GameScene extends Phaser.Scene {
 
     private initZoom() {
         const dpr = window.devicePixelRatio || 1;
-        console.log('#####** dpr', dpr);
 
         // base zoom
         let zoom = 1;
@@ -69,7 +99,74 @@ export class GameScene extends Phaser.Scene {
 
         const map = this.make.tilemap({ key: `${this.levelData.level}_LEVEL` });
 
-        console.log('####** map tile data', map);
+        const collisionTiles = map.addTilesetImage(TILED_TILESET_NAMES.COLLISION, ASSET_KEYS.COLLISION);
+
+        const collisionLayer = map.createLayer(
+            TILED_LAYER_NAMES.COLLISION,
+            collisionTiles ? [collisionTiles] : [],
+            0,
+            0,
+        );
+
+        if (!collisionLayer) {
+            return;
+        }
+
+        collisionLayer.setDepth(DEBUG_COLLISION_PLAYER_TILEMAP ? 3 : -1);
+
+        this.collisionsTilemap = collisionLayer;
+
+        // Stelle sicher, dass die Kamera auf 0/0 gescrollt ist
+        this.cameras.main.setScroll(0, 0);
+
+        // Log: wie viele non-zero Tiles insgesamt (nochmal)
+        let nonZero = 0;
+        collisionLayer.forEachTile((tile) => {
+            if (tile.index > 0) nonZero++;
+        });
+        console.log('collisionLayer non-zero tiles count (debug):', nonZero);
+
+        this.objectsByRoomId = {};
+
+        this.createRoomObjects(map, TILED_LAYER_NAMES.ROOMS);
+
+        const roomObjects = getAllLayerNamesWithPrefix(map, TILED_LAYER_NAMES.ROOMS).map((layerName) => {
+            return {
+                name: layerName,
+                roomId: Number(layerName.split('/')[1]),
+            };
+        });
+
+        const switchLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.SWITCHES}`));
+        const potsLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.POTS}`));
+        const fireLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.FIRE}`));
+        const enemyLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.ENEMIES}`));
+        const chestLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.CHESTS}`));
+        const doorLayerNames = roomObjects.filter((room) => room.name.endsWith(`/${TILED_LAYER_NAMES.DOORS}`));
+
+        switchLayerNames.forEach((layer) => {
+            this.createSwitches(map, layer.name, layer.roomId);
+        });
+
+        potsLayerNames.forEach((layer) => {
+            this.createPots(map, layer.name, layer.roomId);
+        });
+
+        fireLayerNames.forEach((layer) => {
+            this.createFire(map, layer.name, layer.roomId);
+        });
+
+        enemyLayerNames.forEach((layer) => {
+            this.createEnemies(map, layer.name, layer.roomId);
+        });
+
+        chestLayerNames.forEach((layer) => {
+            this.createChests(map, layer.name, layer.roomId);
+        });
+
+        doorLayerNames.forEach((layer) => {
+            this.createDoors(map, layer.name, layer.roomId);
+        });
 
         this.add.image(0, 0, `${this.levelData.level}_BACKGROUND`).setOrigin(0);
         this.add.image(0, 0, `${this.levelData.level}_FOREGROUND`).setOrigin(0).setDepth(2);
@@ -174,6 +271,55 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    createRoomObjects(map: Phaser.Tilemaps.Tilemap, layerName: string) {
+        const tiledObjectsRooms = getTiledRoomObjectsFromMap(map, layerName);
+        console.log('[Rooms]', tiledObjectsRooms);
+
+        const that = this;
+        tiledObjectsRooms.forEach(function (tiledObject) {
+            that.objectsByRoomId[tiledObject.id] = {
+                chestMap: {},
+                doorMap: {},
+                doors: [],
+                switches: [],
+                pots: [],
+                chests: [],
+                fire: [],
+                room: tiledObject,
+            };
+        });
+    }
+
+    createDoors(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
+        const tiledDoorObjects = getTiledDoorObjectsFromMap(map, layerName);
+        console.log('[Doors] tiledDoorObjects', tiledDoorObjects);
+    }
+
+    createPots(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
+        const tiledPotObjects = getTiledPotObjectsFromMap(map, layerName);
+        console.log('[Pots] tiledPotObjects', tiledPotObjects);
+    }
+
+    createChests(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
+        const tiledChestObjects = getTiledChestObjectsFromMap(map, layerName);
+        console.log('[Chests] tiledChestObjects', tiledChestObjects);
+    }
+
+    createFire(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
+        const tiledFireObjects = getTiledFireObjectsFromMap(map, layerName);
+        console.log('[Fire] tiledFireObjects', tiledFireObjects);
+    }
+
+    createEnemies(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
+        const tiledEnemyObjects = getTiledEnemyObjectsFromMap(map, layerName);
+        console.log('[Enemies] tiledEnemyObjects', tiledEnemyObjects);
+    }
+
+    createSwitches(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
+        const tiledSwitchObjects = getTiledSwitchObjectsFromMap(map, layerName);
+        console.log('[Switches] tiledSwitchObjects', tiledSwitchObjects);
+    }
+
     registerColliders() {
         // @ts-ignore
         this.enemyGroup.children.each((enemy) => {
@@ -243,6 +389,9 @@ export class GameScene extends Phaser.Scene {
                 return true;
             },
         );
+
+        this.physics.add.collider(this.player, this.collisionsTilemap);
+        this.collisionsTilemap.setCollision(this.collisionsTilemap.tileset[0].firstgid);
     }
 
     registerCustomEvents() {

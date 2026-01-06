@@ -86,7 +86,7 @@ class Player extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
         scene.physics.add.existing(this);
 
         // update the physics body size
-        this.physicsBody.setSize(10, 16, true);
+        this.physicsBody.setSize(10, 12, true).setOffset(3, 10);
 
         // register the update method that triggers on every frame
         config.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);

@@ -48,6 +48,8 @@ export type TrapType = keyof typeof TRAP_TYPE;
 
 export type TiledPotObject = TiledObject;
 
+export type TiledFireObject = TiledObject;
+
 export type TiledChestObject = {
     contents: ChestReward;
     id: number;

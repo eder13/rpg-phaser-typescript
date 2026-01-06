@@ -10,6 +10,7 @@ import {
     TiledChestObject,
     TiledDoorObject,
     TiledEnemyObject,
+    TiledFireObject,
     TiledObjectProperty,
     TiledObjectWithProperties,
     TiledPotObject,
@@ -29,6 +30,7 @@ import {
     TRAP_TYPE,
 } from './common';
 import { LevelName } from '../types';
+import Logger from '../logger';
 
 function isDirection(direction: string): direction is Direction {
     return DIRECTION[direction] !== undefined;
@@ -238,6 +240,26 @@ export function isTrapType(trapType: string): trapType is TrapType {
 }
 
 /**
+ *  Finds all of the valid 'Fire' Tiled Objects on a given layer of a Tilemap.
+ */
+export function getTiledFireObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerName: string): TiledFireObject[] {
+    const fireObjects: TiledFireObject[] = [];
+
+    // loop through each object and validate object has properties for the object we are planning to build
+    const tiledObjects = getTiledObjectsFromLayer(map, layerName);
+    tiledObjects.forEach((tiledObject) => {
+        fireObjects.push({
+            x: tiledObject.x,
+            y: tiledObject.y,
+            width: tiledObject.width,
+            height: tiledObject.height,
+        });
+    });
+
+    return fireObjects;
+}
+
+/**
  * Finds all of the valid 'Pot' Tiled Objects on a given layer of a Tilemap.
  */
 export function getTiledPotObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerName: string): TiledPotObject[] {
@@ -279,14 +301,15 @@ export function getTiledChestObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerN
             tiledObject.properties,
             TILED_CHEST_OBJECT_PROPERTY.REQUIRES_BOSS_KEY,
         );
+
         if (
             contents === undefined ||
             id === undefined ||
             revealChestTrigger === undefined ||
-            requiresBossKey === undefined ||
             !isTrapType(revealChestTrigger) ||
             !isChestReward(contents)
         ) {
+            Logger.warn(`[Chests] Invalid chest object: ${JSON.stringify(tiledObject)}`);
             return;
         }
 
@@ -298,7 +321,7 @@ export function getTiledChestObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerN
             id,
             revealChestTrigger,
             contents,
-            requiresBossKey,
+            requiresBossKey: !!requiresBossKey,
         });
     });
 
@@ -320,6 +343,7 @@ export function getTiledEnemyObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layerN
     tiledObjects.forEach((tiledObject) => {
         const enemyType = getTiledPropertyByName<number>(tiledObject.properties, TILED_ENEMY_OBJECT_PROPERTY.TYPE);
         if (enemyType === undefined) {
+            Logger.warn(`[Enemies] Invalid enemy object: ${JSON.stringify(tiledObject)}`);
             return;
         }
 
@@ -343,6 +367,7 @@ export function getTiledSwitchObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layer
 
     // loop through each object and validate object has properties for the object we are planning to build
     const tiledObjects = getTiledObjectsFromLayer(map, layerName);
+
     tiledObjects.forEach((tiledObject) => {
         const action = getTiledPropertyByName<string>(tiledObject.properties, TILED_SWITCH_OBJECT_PROPERTY.ACTION);
         const targetIds = getTiledPropertyByName<string>(
@@ -358,6 +383,7 @@ export function getTiledSwitchObjectsFromMap(map: Phaser.Tilemaps.Tilemap, layer
             !isSwitchAction(action) ||
             !isSwitchTexture(texture)
         ) {
+            Logger.warn(`[Switches] Invalid switch object: ${JSON.stringify(tiledObject)}`);
             return;
         }
 
