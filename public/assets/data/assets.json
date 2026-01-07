@@ -113,6 +113,17 @@
         "files": [
             {
                 "type": "aseprite",
+                "key": "SPIDER_RED",
+                "textureURL": "spider_red-sheet.png",
+                "atlasURL": "spider_red.json"
+            }
+        ]
+    },
+    {
+        "path": "assets/images/enemies",
+        "files": [
+            {
+                "type": "aseprite",
                 "key": "BLOB",
                 "textureURL": "blob.png",
                 "atlasURL": "blob.json"

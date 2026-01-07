@@ -2053,7 +2053,7 @@
                                             "name": "doorType",
                                             "propertytype": "doorType",
                                             "type": "string",
-                                            "value": "OPEN"
+                                            "value": "TRAP"
                                         },
                                         {
                                             "name": "trapDoorTrigger",
@@ -2077,7 +2077,7 @@
                                     "visible": true,
                                     "width": 8,
                                     "x": 1304.5414746579,
-                                    "y": 879.508529503578
+                                    "y": 880.508529503578
                                 }
                             ],
                             "opacity": 1,
@@ -2296,7 +2296,7 @@
                                             "name": "doorType",
                                             "propertytype": "doorType",
                                             "type": "string",
-                                            "value": "TRAP"
+                                            "value": "OPEN"
                                         },
                                         {
                                             "name": "id",
@@ -2868,7 +2868,7 @@
                                             "name": "doorType",
                                             "propertytype": "doorType",
                                             "type": "string",
-                                            "value": "OPEN"
+                                            "value": "TRAP"
                                         },
                                         {
                                             "name": "direction",
@@ -2969,8 +2969,8 @@
                                     "type": "door",
                                     "visible": true,
                                     "width": 8,
-                                    "x": 1248.07148692184,
-                                    "y": 879.557662473954
+                                    "x": 1248,
+                                    "y": 880
                                 }
                             ],
                             "opacity": 1,
@@ -3154,7 +3154,7 @@
                                             "name": "doorType",
                                             "propertytype": "doorType",
                                             "type": "string",
-                                            "value": "OPEN"
+                                            "value": "LOCK"
                                         },
                                         {
                                             "name": "id",
@@ -3227,7 +3227,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 2
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,
@@ -3246,7 +3246,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 1
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,
@@ -3265,7 +3265,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 1
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,
@@ -3284,7 +3284,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 1
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,
@@ -3413,12 +3413,12 @@
                                             "name": "action",
                                             "propertytype": "switchAction",
                                             "type": "string",
-                                            "value": "NOTHING"
+                                            "value": "OPEN_DOOR"
                                         },
                                         {
                                             "name": "targetIds",
                                             "type": "string",
-                                            "value": ""
+                                            "value": "1"
                                         }
                                     ],
                                     "rotation": 0,

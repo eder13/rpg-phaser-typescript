@@ -34,7 +34,7 @@ export class Chest extends Phaser.Physics.Arcade.Image implements CustomGameObje
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.setOrigin(0, 1).setImmovable(true).setDepth(56);
+        this.setOrigin(0, 1).setImmovable(true).setDepth(5);
 
         this._id = config.id;
         this._revealTrigger = config.revealTrigger;

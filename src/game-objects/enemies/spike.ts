@@ -18,7 +18,7 @@ class Spike extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.setOrigin(0, 1).setImmovable(true).setDepth(50);
+        this.setOrigin(0, 1).setImmovable(true).setDepth(5);
 
         this.stateMachine = new StateMachine('spike');
         const spikeIdleState = new SpikeIdleState(this);

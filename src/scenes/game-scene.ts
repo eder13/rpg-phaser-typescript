@@ -29,7 +29,7 @@ import { GameObject, LevelData } from '../common/types';
 import { EVENT_BUS, Events } from '../common/events';
 import Fire from '../game-objects/objects/fire';
 import { DIRECTION, TiledRoomObject } from '../common/tiled/types';
-import { TILED_LAYER_NAMES, TILED_TILESET_NAMES } from '../common/tiled/common';
+import { DOOR_TYPE, TILED_LAYER_NAMES, TILED_TILESET_NAMES, TRAP_TYPE } from '../common/tiled/common';
 import {
     getAllLayerNamesWithPrefix,
     getTiledChestObjectsFromMap,
@@ -45,6 +45,7 @@ import { getDirectionOfObjectFromAnotherObject } from '../common/utils';
 import { isEqual } from 'lodash';
 import Blob from '../game-objects/enemies/blob';
 import Spike from '../game-objects/enemies/spike';
+import { Button } from '../game-objects/objects/button';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
@@ -62,7 +63,7 @@ export class GameScene extends Phaser.Scene {
                 [key: number]: Door;
             };
             doors: Door[];
-            switches: unknown[];
+            switches: Button[];
             pots: Pot[];
             chests: Chest[];
             fire: Fire[];
@@ -76,6 +77,10 @@ export class GameScene extends Phaser.Scene {
     doorTransitionGroup!: Phaser.GameObjects.Group;
     doorOverlapCollider!: Phaser.Physics.Arcade.Collider;
     potsGroup!: Phaser.GameObjects.Group;
+    entryDoor!: Door;
+    lockedDoorsBlockingGroup!: Phaser.GameObjects.Group;
+    buttonGroup!: Phaser.GameObjects.Group;
+    buttonOverlapCollider!: Phaser.Physics.Arcade.Collider;
 
     private lastFpsUpdate = 0;
 
@@ -163,6 +168,8 @@ export class GameScene extends Phaser.Scene {
         this.doorTransitionGroup = this.add.group([]);
         this.potsGroup = this.add.group([]);
         this.blockingGroup = this.add.group([]);
+        this.lockedDoorsBlockingGroup = this.add.group([]);
+        this.buttonGroup = this.add.group([]);
         this.enemyGroup = this.add.group(
             [],
             /*[
@@ -243,7 +250,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.add.image(0, 0, `${this.levelData.level}_BACKGROUND`).setOrigin(0);
-        this.add.image(0, 0, `${this.levelData.level}_FOREGROUND`).setOrigin(0).setDepth(2);
+        this.add.image(0, 0, `${this.levelData.level}_FOREGROUND`).setOrigin(0).setDepth(3);
 
         this.player = new Player({
             scene: this,
@@ -258,6 +265,26 @@ export class GameScene extends Phaser.Scene {
             invulnerableDuration: PLAYER_INVULNERABLE_DURATION,
             maxLife: PLAYER_HEALTH,
         });
+
+        this.entryDoor = new Door(
+            this,
+            {
+                x: 310,
+                y: 1064,
+                id: -1,
+                isUnlocked: true,
+                targetDoorId: -1,
+                trapDoorTrigger: TRAP_TYPE.NONE,
+                isLevelTransition: false,
+                targetLevel: '',
+                targetRoomId: -1,
+                direction: DIRECTION.DOWN,
+                doorType: DOOR_TYPE.OPEN,
+                width: 20,
+                height: 8,
+            },
+            -1,
+        );
 
         /*         this.blockingGroup = this.add.group([
             new Pot({
@@ -389,7 +416,7 @@ export class GameScene extends Phaser.Scene {
                 enemy = new Spider({
                     scene: this,
                     position: { x: tiledEnemy.x, y: tiledEnemy.y },
-                    assetKey: ASSET_KEYS.SPIDER,
+                    assetKey: ASSET_KEYS.SPIDER_RED,
                     frame: 0,
                     movement: new InputComponent(),
                     isInvulnerable: false,
@@ -438,6 +465,12 @@ export class GameScene extends Phaser.Scene {
     createSwitches(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
         const tiledSwitchObjects = getTiledSwitchObjectsFromMap(map, layerName);
         console.log('[Switches] tiledSwitchObjects', tiledSwitchObjects);
+
+        tiledSwitchObjects.forEach((tiledSwitch) => {
+            const button = new Button(this, tiledSwitch);
+            this.objectsByRoomId[roomId].switches.push(button);
+            this.buttonGroup.add(button);
+        });
     }
 
     createDoors(map: Phaser.Tilemaps.Tilemap, layerName: string, roomId: number) {
@@ -449,6 +482,14 @@ export class GameScene extends Phaser.Scene {
             this.objectsByRoomId[roomId].doors.push(door);
             this.objectsByRoomId[roomId].doorMap[tiledDoor.id] = door;
             this.doorTransitionGroup.add(door.doorTransitionZone);
+
+            if (door.doorObject) {
+                if (door.doorType === DOOR_TYPE.LOCK || door.doorType === DOOR_TYPE.BOSS) {
+                    this.lockedDoorsBlockingGroup.add(door.doorObject);
+                } else {
+                    this.blockingGroup.add(door.doorObject);
+                }
+            }
         });
     }
 
@@ -462,6 +503,11 @@ export class GameScene extends Phaser.Scene {
         // collision betweem player and other gameobjects
         this.physics.add.overlap(this.player, this.enemyGroup, () => {
             this.player.hit(1);
+        });
+
+        this.physics.add.overlap(this.player, this.entryDoor.doorTransitionZone, () => {
+            // TODO: Show Text "your adventure just started you can not leave now!"
+            console.log('##### ENTRY via zone!');
         });
 
         // collision between player and blocking group
@@ -533,6 +579,10 @@ export class GameScene extends Phaser.Scene {
 
         this.doorOverlapCollider = this.physics.add.overlap(this.player, this.doorTransitionGroup, (_, doorObject) => {
             this.handleRoomTransition(doorObject as Phaser.Types.Physics.Arcade.GameObjectWithBody);
+        });
+
+        this.buttonOverlapCollider = this.physics.add.overlap(this.player, this.buttonGroup, (_, button) => {
+            this.handleButtonPressed(button as Phaser.Types.Physics.Arcade.GameObjectWithBody);
         });
     }
 
@@ -643,7 +693,7 @@ export class GameScene extends Phaser.Scene {
                 door.position.x +
                 door.doorTransitionZone.width / 2 +
                 doorDistance.x +
-                (targetDirection === DIRECTION.LEFT ? -50 : targetDirection === DIRECTION.RIGHT ? 50 : 0),
+                (targetDirection === DIRECTION.LEFT ? -60 : targetDirection === DIRECTION.RIGHT ? 60 : 0),
             y:
                 (targetDirection === DIRECTION.LEFT
                     ? door.position.y - door.doorTransitionZone.height / 2
@@ -651,7 +701,7 @@ export class GameScene extends Phaser.Scene {
                       ? door.position.y - door.doorTransitionZone.height / 2
                       : door.position.y + door.doorTransitionZone.height / 2) +
                 doorDistance.y +
-                (targetDirection === DIRECTION.UP ? -60 : targetDirection === DIRECTION.DOWN ? 50 : 0),
+                (targetDirection === DIRECTION.UP ? -70 : targetDirection === DIRECTION.DOWN ? 60 : 0),
         };
 
         this.tweens.add({
@@ -702,5 +752,13 @@ export class GameScene extends Phaser.Scene {
         // simulate chest reveal
         //this.objectsByRoomId[this.currentRoomId].chestMap[1].revealChest();
         //this.objectsByRoomId[this.currentRoomId].chestMap[2].revealChest();
+    }
+
+    private handleButtonPressed(button: Phaser.Types.Physics.Arcade.GameObjectWithBody) {
+        const buttonObject = this.objectsByRoomId[this.currentRoomId].switches[Number(button.name)];
+
+        console.log('#####** buttonObject', buttonObject);
+
+        buttonObject.buttonPressed();
     }
 }

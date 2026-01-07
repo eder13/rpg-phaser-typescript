@@ -18,7 +18,7 @@ class Fire extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.setOrigin(0, 1).setImmovable(true).setDepth(50);
+        this.setOrigin(0, 1).setImmovable(true).setDepth(3);
 
         this.stateMachine = new StateMachine('fire');
         const burningState = new BurningStateFire(this);

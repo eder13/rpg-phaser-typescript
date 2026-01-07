@@ -80,7 +80,7 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
         // add the Spider Object to the scene that we create here
         scene.add.existing(this);
         // add Physics to the scene
-        scene.physics.add.existing(this).setDepth(55);
+        scene.physics.add.existing(this).setDepth(4);
 
         // register the update method that triggers on every frame
         config.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);

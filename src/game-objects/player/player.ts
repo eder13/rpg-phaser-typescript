@@ -83,7 +83,7 @@ class Player extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
         // add the Player Object to the scene that we create here
         scene.add.existing(this);
         // add Physics to the scene
-        scene.physics.add.existing(this);
+        scene.physics.add.existing(this).setDepth(2);
 
         // update the physics body size
         this.physicsBody.setSize(10, 12, true).setOffset(3, 10);

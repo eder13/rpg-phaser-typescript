@@ -1,6 +1,9 @@
+import { create } from 'lodash';
 import { DEBUG_COLLISION_DOOR_TRANSITION_ZONE } from '../../common/globals';
-import { Direction, TiledDoorObject } from '../../common/tiled/types';
+import { DIRECTION, Direction, DoorType, TiledDoorObject, TrapType } from '../../common/tiled/types';
 import { CustomGameObject, Position } from '../../common/types';
+import { DOOR_TYPE } from '../../common/tiled/common';
+import { ASSET_KEYS, DOOR_FRAME_KEYS } from '../../common/assets';
 
 class Door implements CustomGameObject {
     public scene: Phaser.Scene;
@@ -12,6 +15,11 @@ class Door implements CustomGameObject {
     public doorTransitionZone: Phaser.GameObjects.Zone;
     public debugDoorTransitionZone: Phaser.GameObjects.Rectangle | undefined;
     public direction: Direction;
+    public id: number;
+    public isUnlocked: boolean;
+    public doorObject: Phaser.Types.Physics.Arcade.ImageWithDynamicBody | undefined;
+    public trapDoorTrigger: TrapType;
+    public doorType: DoorType;
 
     constructor(scene: Phaser.Scene, config: TiledDoorObject, roomId: number) {
         this.scene = scene;
@@ -25,8 +33,54 @@ class Door implements CustomGameObject {
             ? this.createDebugDoorTransitionZone(config)
             : undefined;
         this.direction = config.direction;
+        this.id = config.id;
+        this.isUnlocked = config.isUnlocked;
+        this.trapDoorTrigger = config.trapDoorTrigger;
+        this.doorType = config.doorType;
+        this.doorObject = this.createDoorObjectIfNecessary();
 
         this.scene.physics.world.enable(this.doorTransitionZone);
+    }
+
+    private createDoorObjectIfNecessary() {
+        if (this.doorType === DOOR_TYPE.OPEN) {
+            return undefined;
+        }
+
+        const frameName = DOOR_FRAME_KEYS[`${this.doorType}_${this.direction}`];
+
+        let x = this.position.x;
+
+        // HACK I do not know why this is necessary, but it fixes the door position for specific doors
+        if (this.position.x === 1248 && this.position.y === 880) {
+            x += 1;
+        }
+        if (this.position.x === 1304.5414746579 && this.position.y === 880.508529503578) {
+            x -= 1;
+        }
+
+        const door = this.scene.physics.add
+            .image(x, Math.round(this.position.y), ASSET_KEYS.DUNGEON_OBJECTS, frameName)
+            .setImmovable(true)
+            .setDepth(4)
+            .setName(this.id.toString(10));
+
+        switch (this.direction) {
+            case DIRECTION.UP:
+                door.setOrigin(0, 0.5);
+                break;
+            case DIRECTION.DOWN:
+                door.setOrigin(0, 0.75);
+                break;
+            case DIRECTION.LEFT:
+                door.setOrigin(0.25, 1);
+                break;
+            case DIRECTION.RIGHT:
+                door.setOrigin(0.5, 1);
+                break;
+        }
+
+        return door;
     }
 
     private createDoorTransitionZone(config: TiledDoorObject): Phaser.GameObjects.Zone {
@@ -49,13 +103,45 @@ class Door implements CustomGameObject {
         (this.doorTransitionZone as any).body.enabled = true;
         (this.doorTransitionZone as any).body.active = true;
         (this.doorTransitionZone as any).body.visible = true;
+
+        if (this.doorObject) {
+            (this.doorObject as any).body.enabled = true;
+            (this.doorObject as any).body.active = true;
+            (this.doorObject as any).body.visible = true;
+        }
     }
 
-    public disableObject(): void {
+    public disableObject(disableDoorTrigger = true): void {
         console.log('#####** Disabling door transition zone for door id:', this.doorTransitionZone.name);
-        (this.doorTransitionZone as any).body.enabled = false;
-        (this.doorTransitionZone as any).body.active = false;
-        (this.doorTransitionZone as any).body.visible = false;
+
+        if (disableDoorTrigger) {
+            (this.doorTransitionZone as any).body.enabled = false;
+            (this.doorTransitionZone as any).body.active = false;
+            (this.doorTransitionZone as any).body.visible = false;
+        }
+
+        if (this.isUnlocked) {
+            return;
+        }
+
+        if (this.doorObject) {
+            (this.doorObject as any).body.enabled = false;
+            (this.doorObject as any).body.active = false;
+            (this.doorObject as any).body.visible = false;
+        }
+    }
+
+    public openDoor() {
+        if (this.doorType === DOOR_TYPE.OPEN) {
+            return;
+        }
+
+        if (this.doorType === DOOR_TYPE.LOCK || this.doorType === DOOR_TYPE.BOSS) {
+            this.isUnlocked = true;
+
+            // disable overlayed locked door object and enable transition zone for room transition
+            this.disableObject(false);
+        }
     }
 }
 

@@ -37,7 +37,7 @@ class LiftState extends AbstractMovableState {
             const body = gameObjectPickedUp.body as Phaser.Physics.Arcade.Body;
             body.enable = false;
         }
-        gameObjectPickedUp?.setDepth(2).setOrigin(0.5, 0.5);
+        gameObjectPickedUp?.setDepth(3).setOrigin(0.5, 0.5);
 
         if (DIRECTION.isMovingDown) {
             this.gameObject.play(

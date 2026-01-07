@@ -20,7 +20,7 @@ export class Pot extends Phaser.Physics.Arcade.Sprite implements CustomGameObjec
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.setOrigin(0, 1).setImmovable(true).setDepth(50); // setImmovable wont let the object move once collided with
+        this.setOrigin(0, 1).setImmovable(true).setDepth(1); // setImmovable wont let the object move once collided with
 
         this.#position = config.position;
 

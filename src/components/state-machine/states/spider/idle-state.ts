@@ -1,4 +1,4 @@
-import { SPIDER_ANIMATION_KEYS } from '../../../../common/assets';
+import { SPIDER_ANIMATION_KEYS, SPIDER_RED_ANIMATION_KEYS } from '../../../../common/assets';
 import { DIRECTION_SPIDER } from '../../../../common/globals';
 import Spider from '../../../../game-objects/enemies/spider';
 import AbstractMovableState from '../../base/abstract-movable-state';
@@ -22,7 +22,7 @@ class IdleStateSpider extends AbstractMovableState {
     onUpdate(args?: unknown[]) {
         this.gameObject.play(
             {
-                key: SPIDER_ANIMATION_KEYS.WALK,
+                key: SPIDER_RED_ANIMATION_KEYS.IDLE_DOWN,
                 repeat: -1,
             },
             true,

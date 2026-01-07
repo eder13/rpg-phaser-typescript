@@ -30,7 +30,7 @@ class Saw extends Phaser.Physics.Arcade.Sprite {
         // add the Spider Object to the scene that we create here
         scene.add.existing(this);
         // add Physics to the scene
-        scene.physics.add.existing(this).setDepth(55);
+        scene.physics.add.existing(this).setDepth(4);
 
         // All the components that are used here.
         this.controlsComponent = new ControlsComponent(this, movement);

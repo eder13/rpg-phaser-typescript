@@ -8,6 +8,7 @@ export const ASSET_KEYS = {
     POT: 'POT',
     POT_BREAK: 'POT_BREAK',
     SPIDER: 'SPIDER',
+    SPIDER_RED: 'SPIDER_RED',
     SPIKE: 'SPIKE',
     BLOB: 'BLOB',
     SAW: 'SAW',
@@ -107,6 +108,14 @@ export const BLOB_ANIMATION_KEYS = {
 export const SPIDER_ANIMATION_KEYS = {
     WALK: 'spider_walk',
     HIT: 'spider_hit',
+    DEATH: ASSET_KEYS.ENEMY_DEATH,
+} as const;
+
+export const SPIDER_RED_ANIMATION_KEYS = {
+    IDLE_DOWN: 'spider_idle_down',
+    IDLE_RIGHT: 'spider_idle_right',
+    IDLE_UP: 'spider_idle_up',
+    IDLE_LEFT: 'spider_idle_left',
     DEATH: ASSET_KEYS.ENEMY_DEATH,
 } as const;
 
