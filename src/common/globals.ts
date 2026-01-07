@@ -26,6 +26,13 @@ export const DIRECTION_SPIDER = {
     isMovingDown: false,
 };
 
+export const DIRECTION_BLOB = {
+    isMovingRight: false,
+    isMovingLeft: false,
+    isMovingUp: false,
+    isMovingDown: false,
+};
+
 export const DIRECTION_SAW = {
     isMovingRight: false,
     isMovingLeft: false,
@@ -46,7 +53,17 @@ export const TWEEN_SCALE_X_PULSE = 0.8;
 export const TWEEN_SCALE_Y_PULSE = 0.8;
 export const TWEEN_DURATION = 500;
 
-export const PLAYER_INVULNERABLE_DURATION = 1000;
+export const BLOB_HURT_PUSHBACK_SPEED = 70;
+
+export const DELAY_BLOB_CHANGE_DIRECTION_MIN = 200;
+export const DELAY_BLOB_CHANGE_DIRECTION_MAX = 800;
+export const DELAY_BLOB_CHANGE_DIRECTION_WAIT = 100;
+
+export const SPEED_BLOB = 100;
+
+export const BLOB_HEALTH = 3;
+
+export const PLAYER_INVULNERABLE_DURATION = 2000;
 
 export const SAW_INVULNERABLE_DURATION = Infinity;
 
@@ -84,3 +101,5 @@ export const DELAY_TWEEN_FOCUS_PLAYER_CAMERA = 100;
 
 export const DURATION_BETWEEN_FOCUS_ROOM_CAMERA = 500;
 export const DELAY_BETWEEN_FOCUS_ROOM_CAMERA = 100;
+
+export const FREEZE_TIME_ENEMIES_ROOM_TRANSITION = 800;

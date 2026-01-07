@@ -8,6 +8,7 @@ import Logger from '../common/logger';
 import Spider from '../game-objects/enemies/spider';
 import Saw from '../game-objects/enemies/saw';
 import {
+    BLOB_HEALTH,
     CHEST_STATE,
     DEBUG_COLLISION_ENEMY_TILEMAP,
     DEBUG_COLLISION_PLAYER_TILEMAP,
@@ -16,6 +17,7 @@ import {
     DELAY_TWEEN_FOCUS_PLAYER_CAMERA,
     DURATION_BETWEEN_FOCUS_ROOM_CAMERA,
     DURATION_TWEEN_FOCUS_PLAYER_CAMERA,
+    FREEZE_TIME_ENEMIES_ROOM_TRANSITION,
     PLAYER_HEALTH,
     PLAYER_INVULNERABLE_DURATION,
     SAW_INVULNERABLE_DURATION,
@@ -41,6 +43,8 @@ import {
 import Door from '../game-objects/objects/door';
 import { getDirectionOfObjectFromAnotherObject } from '../common/utils';
 import { isEqual } from 'lodash';
+import Blob from '../game-objects/enemies/blob';
+import Spike from '../game-objects/enemies/spike';
 
 export class GameScene extends Phaser.Scene {
     player!: Player;
@@ -62,7 +66,7 @@ export class GameScene extends Phaser.Scene {
             pots: Pot[];
             chests: Chest[];
             fire: Fire[];
-            enemyGroup: Array<Spider | Saw>;
+            enemyGroup: Array<Spider | Saw | Blob | Spike>;
             room: TiledRoomObject;
         };
     };
@@ -74,6 +78,10 @@ export class GameScene extends Phaser.Scene {
     potsGroup!: Phaser.GameObjects.Group;
 
     private lastFpsUpdate = 0;
+
+    private _freezeState = {
+        enemies: new Map<Phaser.GameObjects.GameObject, { active: boolean; bodyEnabled: boolean }>(),
+    };
 
     constructor() {
         super({
@@ -240,8 +248,8 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({
             scene: this,
             position: {
-                x: this.scale.width / 2 - 12,
-                y: this.scale.height / 2 + 100,
+                x: 320,
+                y: 1017,
             },
             assetKey: ASSET_KEYS.PLAYER,
             frame: 0,
@@ -349,9 +357,12 @@ export class GameScene extends Phaser.Scene {
                 scene: this,
                 position: { x: tiledChest.x, y: tiledChest.y },
                 requireBossKey: tiledChest.requiresBossKey,
-                chestState: tiledChest.revealChestTrigger === 'NONE' ? CHEST_STATE.REVEALED : CHEST_STATE.HIDDEN,
+                id: tiledChest.id,
+                revealTrigger: tiledChest.revealChestTrigger,
+                contents: tiledChest.contents,
             });
             this.objectsByRoomId[roomId].chests.push(chest);
+            this.objectsByRoomId[roomId].chestMap[tiledChest.id] = chest;
             this.blockingGroup.add(chest);
         });
     }
@@ -372,7 +383,7 @@ export class GameScene extends Phaser.Scene {
         console.log('[Enemies] tiledEnemyObjects', tiledEnemyObjects);
 
         tiledEnemyObjects.forEach((tiledEnemy) => {
-            let enemy: Spider | Saw;
+            let enemy: Spider | Saw | Blob | Spike;
 
             if (tiledEnemy.type === 1) {
                 enemy = new Spider({
@@ -386,8 +397,7 @@ export class GameScene extends Phaser.Scene {
                     invulnerableDuration: 0,
                     maxLife: SPIDER_HEALTH,
                 });
-            } else {
-                // type === 2
+            } else if (tiledEnemy.type === 2) {
                 enemy = new Saw({
                     scene: this,
                     position: { x: tiledEnemy.x, y: tiledEnemy.y },
@@ -396,6 +406,27 @@ export class GameScene extends Phaser.Scene {
                     movement: new InputComponent(),
                     isInvulnerable: true,
                     invulnerableDuration: SAW_INVULNERABLE_DURATION,
+                });
+            } else if (tiledEnemy.type === 3) {
+                // TODO: Boss
+                return;
+            } else if (tiledEnemy.type === 4) {
+                enemy = new Spike({
+                    scene: this,
+                    position: { x: tiledEnemy.x, y: tiledEnemy.y },
+                });
+            } else {
+                // type === 5
+                enemy = new Blob({
+                    scene: this,
+                    position: { x: tiledEnemy.x, y: tiledEnemy.y },
+                    assetKey: ASSET_KEYS.BLOB,
+                    frame: 0,
+                    movement: new InputComponent(),
+                    isInvulnerable: false,
+                    // no duration because spiders are weak enemies
+                    invulnerableDuration: 0,
+                    maxLife: BLOB_HEALTH,
                 });
             }
 
@@ -444,7 +475,7 @@ export class GameScene extends Phaser.Scene {
             this.blockingGroup,
             (enemy, gameObject) => {
                 if (gameObject instanceof Pot) {
-                    const enemyGameObject = enemy as Spider | Saw;
+                    const enemyGameObject = enemy as Spider | Saw | Blob;
                     const isEqualComponent = isEqual(this.player.objectHeldComponent._object, gameObject);
 
                     if (
@@ -452,7 +483,7 @@ export class GameScene extends Phaser.Scene {
                         this.player.objectHeldComponent._object instanceof Pot &&
                         isEqualComponent
                     ) {
-                        if (enemyGameObject instanceof Spider) {
+                        if (enemyGameObject instanceof Spider || enemyGameObject instanceof Blob) {
                             enemyGameObject.hit(2);
                         }
                     }
@@ -518,6 +549,48 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
+    // Freeze world except player for ms milliseconds
+    freezeWorldExceptPlayer(ms: number) {
+        // store & disable enemies
+        this._freezeState.enemies.clear();
+        // enemyGroup kann undefined sein -> guard
+        if (this.enemyGroup) {
+            // @ts-ignore (Phaser Group children type)
+            this.enemyGroup.children.each((enemy: Phaser.GameObjects.GameObject) => {
+                if (!enemy) return;
+                const body = (enemy as any).body as Phaser.Physics.Arcade.Body | undefined;
+                this._freezeState.enemies.set(enemy, {
+                    active: (enemy as any).active,
+                    bodyEnabled: !!body && !!body.enable,
+                });
+                // disable update handlers and physics for enemy
+                (enemy as any).active = false;
+                if (body) body.enable = false;
+                // pause enemy animation if present
+                if ((enemy as any).anims && (enemy as any).anims.isPlaying) {
+                    (enemy as any).anims.pause();
+                }
+            });
+        }
+
+        // automatically unfreeze after ms
+        this.time.delayedCall(ms, () => this.unfreezeWorldExceptPlayer());
+    }
+
+    unfreezeWorldExceptPlayer() {
+        // restore enemies
+        this._freezeState.enemies.forEach((state, enemy) => {
+            (enemy as any).active = state.active;
+            const body = (enemy as any).body as Phaser.Physics.Arcade.Body | undefined;
+            if (body) body.enable = state.bodyEnabled;
+            // resume animations if present
+            if ((enemy as any).anims) {
+                (enemy as any).anims.resume();
+            }
+        });
+        this._freezeState.enemies.clear();
+    }
+
     async handleRoomTransition(doorCollidedGameObject: Phaser.Types.Physics.Arcade.GameObjectWithBody) {
         this.player.controls.locked = true;
 
@@ -536,6 +609,7 @@ export class GameScene extends Phaser.Scene {
         this.doorOverlapCollider.active = false;
         this.controls.locked = true;
 
+        this.freezeWorldExceptPlayer(FREEZE_TIME_ENEMIES_ROOM_TRANSITION);
         this.time.delayedCall(DELAY_DOOR_TRANSITION_DISABLED_COLLISION_OVERLAP_AND_LOCK_INPUT, () => {
             this.controls.locked = false;
 
@@ -624,5 +698,9 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
 
         this.currentRoomId = targetDoor.roomid;
+
+        // simulate chest reveal
+        //this.objectsByRoomId[this.currentRoomId].chestMap[1].revealChest();
+        //this.objectsByRoomId[this.currentRoomId].chestMap[2].revealChest();
     }
 }

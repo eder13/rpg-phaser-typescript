@@ -8,6 +8,8 @@ export const ASSET_KEYS = {
     POT: 'POT',
     POT_BREAK: 'POT_BREAK',
     SPIDER: 'SPIDER',
+    SPIKE: 'SPIKE',
+    BLOB: 'BLOB',
     SAW: 'SAW',
     FIRE: 'FIRE',
     FIRE_IDLE: 'FIRE_IDLE',
@@ -88,6 +90,18 @@ export const SAW_ANIMATION_KEYS = {
 
 export const FIRE_ANIMATION_KEYS = {
     FIRE_ANIMATION: 'fire_animation',
+};
+
+export const SPIKE_ANIMATION_KEYS = {
+    IDLE: 'idle_spike_animation',
+};
+
+export const BLOB_ANIMATION_KEYS = {
+    MOVE_UP: 'move_up',
+    MOVE_DOWN: 'move_down',
+    MOVE_LEFT: 'move_left',
+    MOVE_RIGHT: 'move_right',
+    DEATH: ASSET_KEYS.ENEMY_DEATH,
 };
 
 export const SPIDER_ANIMATION_KEYS = {

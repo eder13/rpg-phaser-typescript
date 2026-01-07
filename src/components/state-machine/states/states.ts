@@ -17,6 +17,13 @@ export enum SpiderStates {
     DEATH = 'DEATH',
 }
 
+export enum BlobStates {
+    IDLE = 'IDLE',
+    RUNNING = 'RUNNING',
+    HURT = 'HURT',
+    DEATH = 'DEATH',
+}
+
 export enum SawStates {
     RUNNING = 'RUNNING',
     BOUNCE_MOVE = 'BOUNCE_MOVE',
@@ -24,4 +31,8 @@ export enum SawStates {
 
 export enum FireStates {
     BURNING = 'BURNING',
+}
+
+export enum SpikeStates {
+    IDLE = 'IDLE',
 }

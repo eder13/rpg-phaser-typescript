@@ -87,6 +87,17 @@
         ]
     },
     {
+        "path": "assets/images/objects",
+        "files": [
+            {
+                "type": "aseprite",
+                "key": "SPIKE",
+                "textureURL": "Spike-Trap-sheet.png",
+                "atlasURL": "spike-trap.json"
+            }
+        ]
+    },
+    {
         "path": "assets/images/enemies",
         "files": [
             {
@@ -94,6 +105,17 @@
                 "key": "SAW",
                 "textureURL": "saw.png",
                 "atlasURL": "saw.json"
+            }
+        ]
+    },
+    {
+        "path": "assets/images/enemies",
+        "files": [
+            {
+                "type": "aseprite",
+                "key": "BLOB",
+                "textureURL": "blob.png",
+                "atlasURL": "blob.json"
             }
         ]
     },

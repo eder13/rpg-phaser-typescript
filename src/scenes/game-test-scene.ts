@@ -8,6 +8,7 @@ import Logger from '../common/logger';
 import Spider from '../game-objects/enemies/spider';
 import Saw from '../game-objects/enemies/saw';
 import {
+    BLOB_HEALTH,
     CHEST_STATE,
     PLAYER_HEALTH,
     PLAYER_INVULNERABLE_DURATION,
@@ -19,8 +20,11 @@ import { Chest } from '../game-objects/objects/chest';
 import { GameObject } from '../common/types';
 import { EVENT_BUS, Events } from '../common/events';
 import Fire from '../game-objects/objects/fire';
+import { CHEST_REWARD, TRAP_TYPE } from '../common/tiled/common';
+import Spike from '../game-objects/enemies/spike';
+import Blob from '../game-objects/enemies/blob';
 
-export class GameScene extends Phaser.Scene {
+export class GameTestScene extends Phaser.Scene {
     player!: Player;
     controls!: InputComponent;
     enemyGroup!: Phaser.GameObjects.Group;
@@ -30,7 +34,7 @@ export class GameScene extends Phaser.Scene {
 
     constructor() {
         super({
-            key: SCENE_KEYS.GAME_SCENE,
+            key: SCENE_KEYS.GAME_TEST_SCENE,
         });
     }
 
@@ -91,6 +95,20 @@ export class GameScene extends Phaser.Scene {
                     invulnerableDuration: 0,
                     maxLife: SPIDER_HEALTH,
                 }),
+                new Blob({
+                    scene: this,
+                    position: {
+                        x: this.scale.width / 2 - 100,
+                        y: this.scale.height / 2 + 50,
+                    },
+                    assetKey: ASSET_KEYS.BLOB,
+                    frame: 0,
+                    movement: new InputComponent(),
+                    isInvulnerable: false,
+                    // no duration because spiders are weak enemies
+                    invulnerableDuration: 0,
+                    maxLife: BLOB_HEALTH,
+                }),
                 new Saw({
                     scene: this,
                     position: {
@@ -102,6 +120,13 @@ export class GameScene extends Phaser.Scene {
                     movement: new InputComponent(),
                     isInvulnerable: true,
                     invulnerableDuration: SAW_INVULNERABLE_DURATION,
+                }),
+                new Spike({
+                    scene: this,
+                    position: {
+                        x: this.scale.width / 2 - 40,
+                        y: this.scale.height / 2 + 150,
+                    },
                 }),
             ],
             {
@@ -126,6 +151,9 @@ export class GameScene extends Phaser.Scene {
                 },
                 requireBossKey: false,
                 chestState: CHEST_STATE.REVEALED,
+                id: 1,
+                contents: CHEST_REWARD.NOTHING,
+                revealTrigger: TRAP_TYPE.NONE,
             }),
 
             new Chest({
@@ -136,6 +164,9 @@ export class GameScene extends Phaser.Scene {
                 },
                 requireBossKey: true,
                 chestState: CHEST_STATE.REVEALED,
+                id: 2,
+                contents: CHEST_REWARD.NOTHING,
+                revealTrigger: TRAP_TYPE.NONE,
             }),
 
             new Fire({
@@ -162,8 +193,8 @@ export class GameScene extends Phaser.Scene {
     registerColliders() {
         // @ts-ignore
         this.enemyGroup.children.each((enemy) => {
-            //const enemyTyped = enemy as Spider | Saw;
-            //enemyTyped.setCollideWorldBounds(true);
+            const enemyTyped = enemy as Spider | Saw | Spike;
+            enemyTyped.setCollideWorldBounds(true);
         });
 
         // collision betweem player and other gameobjects
@@ -182,13 +213,13 @@ export class GameScene extends Phaser.Scene {
             this.blockingGroup,
             (enemy, gameObject) => {
                 if (gameObject instanceof Pot) {
-                    const enemyGameObject = enemy as Spider | Saw;
+                    const enemyGameObject = enemy as Spider | Saw | Blob;
 
                     if (
                         this.player.objectHeldComponent._object &&
                         this.player.objectHeldComponent._object instanceof Pot
                     ) {
-                        if (enemyGameObject instanceof Spider) {
+                        if (enemyGameObject instanceof Spider || enemyGameObject instanceof Blob) {
                             enemyGameObject.hit(2);
                         }
                     }

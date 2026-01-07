@@ -20,7 +20,7 @@ export class PreloadScene extends Phaser.Scene {
         const levelData: LevelData = {
             level: LEVEL_NAME.DUNGEON_1,
             doorId: 1,
-            roomId: 1,
+            roomId: 3,
         };
 
         this.createAnimations();
@@ -32,6 +32,8 @@ export class PreloadScene extends Phaser.Scene {
         this.anims.createFromAseprite(ASSET_KEYS.SPIDER);
         this.anims.createFromAseprite(ASSET_KEYS.SAW);
         this.anims.createFromAseprite(ASSET_KEYS.FIRE);
+        this.anims.createFromAseprite(ASSET_KEYS.SPIKE);
+        this.anims.createFromAseprite(ASSET_KEYS.BLOB);
         this.anims.create({
             key: ASSET_KEYS.ENEMY_DEATH,
             frames: this.anims.generateFrameNames('ENEMY_DEATH', {

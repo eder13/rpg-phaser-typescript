@@ -1482,7 +1482,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 2
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,
@@ -1510,6 +1510,178 @@
                                     "width": 16,
                                     "x": 1584,
                                     "y": 512
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 80,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1408,
+                                    "y": 864
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 81,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1488,
+                                    "y": 896
+                                },
+
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 84,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1568,
+                                    "y": 864
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 86,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1600,
+                                    "y": 864
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 84,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1568,
+                                    "y": 764
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 86,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1600,
+                                    "y": 764
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 87,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1712,
+                                    "y": 896
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 88,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1744,
+                                    "y": 864
+                                },
+                                {
+                                    "gid": 1,
+                                    "height": 16,
+                                    "id": 89,
+                                    "name": "",
+                                    "properties": [
+                                        {
+                                            "name": "type",
+                                            "type": "int",
+                                            "value": 4
+                                        }
+                                    ],
+                                    "rotation": 0,
+                                    "type": "enemy",
+                                    "visible": true,
+                                    "width": 16,
+                                    "x": 1744,
+                                    "y": 896
                                 },
                                 {
                                     "gid": 1,
@@ -2531,7 +2703,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 1
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,
@@ -2569,7 +2741,7 @@
                                         {
                                             "name": "type",
                                             "type": "int",
-                                            "value": 1
+                                            "value": 5
                                         }
                                     ],
                                     "rotation": 0,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="120" height="68" tilewidth="16" tileheight="16" infinite="0" nextlayerid="47" nextobjectid="80">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="120" height="68" tilewidth="16" tileheight="16" infinite="0" nextlayerid="47" nextobjectid="81">
  <editorsettings>
   <export target="dungeon_1.json" format="json"/>
  </editorsettings>
@@ -416,7 +416,7 @@
   </object>
  </objectgroup>
  <group id="12" name="rooms">
-  <group id="13" name="7" visible="0" opacity="0.93">
+  <group id="13" name="7" opacity="0.93">
    <objectgroup id="46" name="enemies">
     <object id="71" type="enemy" gid="1" x="1616" y="864" width="16" height="16">
      <properties>
@@ -461,6 +461,11 @@
     <object id="79" type="enemy" gid="1" x="1408" y="976" width="16" height="16">
      <properties>
       <property name="type" type="int" value="1"/>
+     </properties>
+    </object>
+    <object id="80" type="enemy" gid="1" x="1408" y="848" width="16" height="16">
+     <properties>
+      <property name="type" type="int" value="4"/>
      </properties>
     </object>
    </objectgroup>
@@ -513,7 +518,7 @@
     </object>
    </objectgroup>
   </group>
-  <group id="14" name="6" visible="0">
+  <group id="14" name="6">
    <objectgroup id="45" name="enemies">
     <object id="68" type="enemy" gid="1" x="944" y="240" width="16" height="16">
      <properties>
@@ -594,7 +599,7 @@
     <object id="40" gid="1" x="688" y="672" width="16" height="16"/>
     <object id="41" gid="1" x="1216" y="672" width="16" height="16"/>
    </objectgroup>
-   <objectgroup id="34" name="switches">
+   <objectgroup id="34" name="switches" visible="0">
     <object id="37" type="switch" gid="1" x="688" y="416" width="16" height="16">
      <properties>
       <property name="action" propertytype="switchAction" value="OPEN_DOOR"/>
@@ -603,7 +608,7 @@
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="25" name="door" visible="0">
+   <objectgroup id="25" name="door">
     <object id="16" type="door" gid="1" x="1087.5" y="694.801" width="32" height="8">
      <properties>
       <property name="direction" propertytype="direction" value="DOWN"/>
@@ -628,7 +633,7 @@
     </object>
    </objectgroup>
   </group>
-  <group id="16" name="4" visible="0">
+  <group id="16" name="4">
    <objectgroup id="43" name="enemies">
     <object id="58" type="enemy" gid="1" x="832" y="912" width="16" height="16">
      <properties>
@@ -692,7 +697,7 @@
     </object>
    </objectgroup>
   </group>
-  <group id="17" name="3" visible="0">
+  <group id="17" name="3">
    <objectgroup id="42" name="enemies">
     <object id="56" type="enemy" gid="1" x="464" y="848" width="16" height="16">
      <properties>
@@ -724,7 +729,7 @@
     <object id="13" type="door" gid="1" x="608.531" y="925.87" width="8" height="32">
      <properties>
       <property name="direction" propertytype="direction" value="RIGHT"/>
-      <property name="doorType" propertytype="doorType" value="LOCK"/>
+      <property name="doorType" propertytype="doorType" value="OPEN"/>
       <property name="id" type="int" value="2"/>
       <property name="targetDoorId" type="int" value="1"/>
       <property name="targetRoomId" type="int" value="4"/>
@@ -787,7 +792,7 @@
      </properties>
     </object>
    </objectgroup>
-   <objectgroup id="23" name="door" visible="0">
+   <objectgroup id="23" name="door">
     <object id="10" type="door" gid="1" x="287.296" y="382.864" width="32" height="8">
      <properties>
       <property name="direction" propertytype="direction" value="UP"/>
@@ -812,7 +817,7 @@
     </object>
    </objectgroup>
   </group>
-  <group id="19" name="1" visible="0">
+  <group id="19" name="1">
    <objectgroup id="40" name="enemies">
     <object id="51" type="enemy" gid="1" x="288" y="160" width="16" height="16">
      <properties>
