@@ -20,6 +20,8 @@ import LiftState from '../../components/state-machine/states/player/lift-state';
 import ObjectHeldComponent from '../../components/game-object/object-held-component';
 import ThrowableObjectComponent from '../../components/game-object/throwable-object-component';
 import ThrowState from '../../components/state-machine/states/player/throw-state';
+import AttackState from '../../components/state-machine/states/player/attack-state';
+import DataManager from '../../components/data-manager/DataManager';
 
 export interface PlayerConfig {
     scene: Phaser.Scene;
@@ -76,6 +78,8 @@ class Player extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
         this.stateMachine.addState(liftState);
         const throwState = new ThrowState(this);
         this.stateMachine.addState(throwState);
+        const attackState = new AttackState(this);
+        this.stateMachine.addState(attackState);
         this.stateMachine.setState(PlayerStates.IDLE);
 
         this.isDefeated = false;
@@ -138,6 +142,7 @@ class Player extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
         }
 
         this.lifeComponent.takeDamage(damage);
+        DataManager.getInstance().loseLife(damage);
 
         if (this.lifeComponent.currentLives <= 0) {
             this.isDefeated = true;

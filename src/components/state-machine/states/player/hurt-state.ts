@@ -70,8 +70,10 @@ class HurtState extends AbstractMovableState {
 
     transition() {
         this.gameObject.scene.time.delayedCall(DELAYED_PUSH_BACK_HURT_RESET, () => {
-            this.gameObject.invulnerableComponent.invulnerable = false;
             this.gameObject.stateMachine.setState(this.nextState);
+        });
+        this.gameObject.scene.time.delayedCall(this.gameObject.invulnerableComponent.duration, () => {
+            this.gameObject.invulnerableComponent.invulnerable = false;
         });
     }
 

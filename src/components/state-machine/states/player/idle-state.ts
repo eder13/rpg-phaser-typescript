@@ -20,6 +20,13 @@ class IdleState extends AbstractMovableState {
     }
 
     onUpdate(args?: unknown[]) {
+        if (this.gameObject.controls.isAttackKeyDown && !this.gameObject.controls.locked) {
+            console.log('[attack]: is attack down');
+
+            this.stateMachine.setState(PlayerStates.ATTACK, DIRECTION);
+            return;
+        }
+
         if (!DIRECTION.isMovingDown && !DIRECTION.isMovingUp && !DIRECTION.isMovingLeft && !DIRECTION.isMovingRight) {
             this.gameObject.play(
                 {

@@ -18,6 +18,7 @@ import IdleBlobState from '../../components/state-machine/states/blob/idle-state
 import RunningStateBlob from '../../components/state-machine/states/blob/running-state';
 import HurtStateBlob from '../../components/state-machine/states/blob/hurt-state';
 import DeathStateBlob from '../../components/state-machine/states/blob/death-state';
+import { Direction } from '../../common/tiled/types';
 
 export interface BlobConfig {
     scene: Phaser.Scene;
@@ -140,7 +141,7 @@ class Blob extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    public hit(damage: number) {
+    public hit(damage: number, hitDirection?: Direction) {
         if (this.invulnerableComponent.invulnerable) {
             return;
         }
@@ -148,11 +149,11 @@ class Blob extends Phaser.Physics.Arcade.Sprite {
 
         if (this.lifeComponent.currentLives <= 0) {
             this.isDefeated = true;
-            this.stateMachine.setState(BlobStates.DEATH);
+            this.stateMachine.setState(BlobStates.DEATH, hitDirection);
             return;
         }
 
-        this.stateMachine.setState(BlobStates.HURT);
+        this.stateMachine.setState(BlobStates.HURT, hitDirection);
     }
 
     public disableObject() {

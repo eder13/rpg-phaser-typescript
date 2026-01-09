@@ -10,13 +10,13 @@ class KeyboardInput extends InputComponent {
         super();
 
         // Movement       Space: Attack
-        // ^ | <- ->      Shift: Sprint
+        // ^ | <- ->
         // | v
         this.cursorKeyboard = keyboardPlugin.createCursorKeys();
         // Action: E
         this.actionKeyboard = keyboardPlugin.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-        // Pause: Enter
-        this.pauseKeyboard = keyboardPlugin.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        // Pause: Escape
+        this.pauseKeyboard = keyboardPlugin.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     }
 
     get isUpDown(): boolean {

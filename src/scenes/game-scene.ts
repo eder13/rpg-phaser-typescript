@@ -261,8 +261,8 @@ export class GameScene extends Phaser.Scene {
             scene: this,
             position: {
                 // Starting room (room 3)
-                //x: 320,
-                //y: 1017,
+                x: 320,
+                y: 1017,
 
                 // Room 5
                 //x: 1088,
@@ -273,8 +273,8 @@ export class GameScene extends Phaser.Scene {
                 //y: 300,
 
                 // Room 7
-                x: 1330,
-                y: 780,
+                //x: 1330,
+                //y: 780,
             },
             assetKey: ASSET_KEYS.PLAYER,
             frame: 0,
@@ -352,6 +352,9 @@ export class GameScene extends Phaser.Scene {
         console.log('#####** this.enemyGroup', this.enemyGroup);
 
         console.log('#####** [btn] this.buttongroupt', this.buttonGroup);
+
+        // run scenes in paralell (UI on top of scene)
+        this.scene.launch(SCENE_KEYS.UI_SCENE);
     }
 
     update(time: number, delta: number): void {
@@ -528,7 +531,7 @@ export class GameScene extends Phaser.Scene {
 
             // just for testing, remove afterwards for spider
             if (enemy instanceof Spider) {
-                enemy.hit(2);
+                enemy.hit(1);
             }
         });
 

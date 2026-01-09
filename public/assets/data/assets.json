@@ -22,6 +22,17 @@
         ]
     },
     {
+        "path": "assets/images/user_interface/Heartbars",
+        "files": [
+            {
+                "type": "spritesheet",
+                "key": "UI_HEARTBARS",
+                "url": "Version3.png",
+                "frameConfig": { "frameWidth": 32, "frameHeight": 32 }
+            }
+        ]
+    },
+    {
         "path": "assets/images/ui",
         "files": [
             {
@@ -67,6 +78,17 @@
                 "key": "PLAYER_DEATH",
                 "textureURL": "player_death.png",
                 "atlasURL": "player_death.json"
+            }
+        ]
+    },
+    {
+        "path": "assets/images/player",
+        "files": [
+            {
+                "type": "aseprite",
+                "key": "PLAYER_ATTACK",
+                "textureURL": "player_attack.png",
+                "atlasURL": "player_attack.json"
             }
         ]
     },

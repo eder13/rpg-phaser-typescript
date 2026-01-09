@@ -5,6 +5,7 @@ export const ASSET_PACK_KEYS = {
 export const ASSET_KEYS = {
     PLAYER: 'PLAYER',
     PLAYER_DEATH: 'PLAYER_DEATH',
+    PLAYER_ATTACK: 'PLAYER_ATTACK',
     POT: 'POT',
     SMALL_KEY: 'SMALL_KEY',
     BOSS_KEY: 'BOSS_KEY',
@@ -28,6 +29,7 @@ export const ASSET_KEYS = {
     UI_DIALOG: 'UI_DIALOG',
     UI_ICONS: 'UI_ICONS',
     UI_CURSOR: 'UI_CURSOR',
+    UI_HEARTBARS: 'UI_HEARTBARS',
     WORLD_BACKGROUND: 'WORLD_BACKGROUND',
     WORLD_FOREGROUND: 'WORLD_FOREGROUND',
     WORLD_LEVEL: 'WORLD_LEVEL',
@@ -58,6 +60,10 @@ export const PlayerAnimation = {
     PICKUP_LEFT: 'pickup_left',
     PICKUP_LEFT_IDLE: 'pickup_left_idle',
     PICKUP_WALKING_LEFT: 'pickup_left_walking',
+    ATTACK_LEFT: 'attack_left',
+    ATTACK_RIGHT: 'attack_right',
+    ATTACK_UP: 'attack_up',
+    ATTACK_DOWN: 'attack_down',
 };
 
 /* export const PLAYER_ANIMATION_KEYS = {

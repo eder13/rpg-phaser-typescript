@@ -3,6 +3,7 @@ import { SCENE_KEYS } from './scenes/scene-keys';
 import { PreloadScene } from './scenes/preload-scene';
 import { GameScene } from './scenes/game-scene';
 import { GameTestScene } from './scenes/game-test-scene';
+import { UIScene } from './scenes/ui-scene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.WEBGL,
@@ -33,4 +34,5 @@ const game = new Phaser.Game(gameConfig);
 game.scene.add(SCENE_KEYS.PRELOAD_SCENE, PreloadScene);
 game.scene.add(SCENE_KEYS.GAME_SCENE, GameScene);
 game.scene.add(SCENE_KEYS.GAME_TEST_SCENE, GameTestScene);
+game.scene.add(SCENE_KEYS.UI_SCENE, UIScene);
 game.scene.start(SCENE_KEYS.PRELOAD_SCENE);

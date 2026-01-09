@@ -19,6 +19,7 @@ import InvulnerableComponent from '../../components/game-object/invulnerable-com
 import LifeComponent from '../../components/game-object/life-component';
 import HurtStateSpider from '../../components/state-machine/states/spider/hurt-state';
 import DeathStateSpider from '../../components/state-machine/states/spider/death-state';
+import { Direction } from '../../common/tiled/types';
 
 export interface SpiderConfig {
     scene: Phaser.Scene;
@@ -141,7 +142,7 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    public hit(damage: number) {
+    public hit(damage: number, hitDirection?: Direction) {
         if (this.invulnerableComponent.invulnerable) {
             return;
         }
@@ -149,11 +150,11 @@ class Spider extends Phaser.Physics.Arcade.Sprite {
 
         if (this.lifeComponent.currentLives <= 0) {
             this.isDefeated = true;
-            this.stateMachine.setState(SpiderStates.DEATH);
+            this.stateMachine.setState(SpiderStates.DEATH, hitDirection);
             return;
         }
 
-        this.stateMachine.setState(SpiderStates.HURT);
+        this.stateMachine.setState(SpiderStates.HURT, hitDirection);
     }
 
     public disableObject() {

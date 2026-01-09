@@ -19,6 +19,14 @@ export const DIRECTION = {
     isPlayerMoving: false,
 };
 
+export const BLOCK_ATTACK_MOVEMENT = {
+    blockAttackMovement: false,
+};
+
+export const ATTACK_STARTED = {
+    attackStarted: false,
+};
+
 export const DIRECTION_SPIDER = {
     isMovingRight: false,
     isMovingLeft: false,
@@ -63,7 +71,7 @@ export const SPEED_BLOB = 100;
 
 export const BLOB_HEALTH = 3;
 
-export const PLAYER_INVULNERABLE_DURATION = 2000;
+export const PLAYER_INVULNERABLE_DURATION = 500;
 
 export const SAW_INVULNERABLE_DURATION = Infinity;
 
@@ -71,7 +79,7 @@ export const PUSH_BACK_SPEED = 100;
 export const SPIDER_HURT_PUSHBACK_SPEED = 50;
 export const DELAYED_PUSH_BACK_HURT_RESET = 200;
 
-export const PLAYER_HEALTH = 300;
+export const PLAYER_HEALTH = 12;
 export const SPIDER_HEALTH = 2;
 
 export const CHEST_STATE = {

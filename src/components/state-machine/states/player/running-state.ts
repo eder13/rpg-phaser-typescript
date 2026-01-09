@@ -2,7 +2,12 @@ import { PlayerAnimation } from '../../../../common/assets';
 import Player from '../../../../game-objects/player/player';
 import AbstractMovableState from '../../base/abstract-movable-state';
 import { PlayerStates } from '../states';
-import { DIRECTION, INTERACTIVE_OBJECT_TYPE, WORLD_FREEZE_STATE_PLAYER } from '../../../../common/globals';
+import {
+    BLOCK_ATTACK_MOVEMENT,
+    DIRECTION,
+    INTERACTIVE_OBJECT_TYPE,
+    WORLD_FREEZE_STATE_PLAYER,
+} from '../../../../common/globals';
 import InputComponent from '../../../input-component/input';
 import Logger from '../../../../common/logger';
 
@@ -17,6 +22,22 @@ class RunningState extends AbstractMovableState {
             this.gameObject.updateVelocity(true, 0);
             this.gameObject.updateVelocity(false, 0);
             // optional: this.gameObject.anims.stop(); // falls Animation ebenfalls stoppen soll
+            return;
+        }
+
+        if (this.gameObject.controls.isAttackKeyDown) {
+            console.log('[attack]: is attack down');
+
+            this.stateMachine.setState(PlayerStates.ATTACK, DIRECTION);
+            BLOCK_ATTACK_MOVEMENT.blockAttackMovement = true;
+
+            return;
+        }
+
+        if (BLOCK_ATTACK_MOVEMENT.blockAttackMovement) {
+            this.gameObject.updateVelocity(true, 0);
+            this.gameObject.updateVelocity(false, 0);
+
             return;
         }
 
