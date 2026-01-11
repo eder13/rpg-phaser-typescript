@@ -8,9 +8,11 @@ A short zelda like dungeon adventure written in TypeScript and Phaser with a lea
 
 1. install dependencies with `npm i`
 
-2. do the same for the server `cd server && npm i`
+2. build the game with `npm run build`
 
-3. create the database and the corresponding user for mysql:
+3. install dependencies for server: `cd server && npm i`
+
+4. create the database and the corresponding user for mysql:
 
 ```
 CREATE DATABASE IF NOT EXISTS db_dungeon_adventure;
@@ -19,12 +21,12 @@ GRANT ALL PRIVILEGES ON db_dungeon_adventure.* TO 'dungeon'@'localhost';
 GRANT CREATE, DROP, REFERENCES, ALTER ON *.* TO 'dungeon'@'localhost';
 ```
 
-4. create a `.env` file inside `server/` with the database link
+5. create a `.env` file inside `server/` with the database link
 
 ```
 DATABASE_URL="mysql://dungeon:my-secret-password-locally@localhost:3306/db_dungeon_adventure"
 ```
 
-5. Run prisma: `npx prisma generate`
+6. run prisma inside `server/`: `npx prisma generate`
 
-6. Run `npm start` inside `server/` and go to localhost:3100 to play.
+7. run `npm start` inside `server/` and go to localhost:3100 to play.
