@@ -39,6 +39,17 @@ class LiftState extends AbstractMovableState {
         }
         gameObjectPickedUp?.setDepth(3).setOrigin(0.5, 0.5);
 
+        // secret buttons under pot -> revealed
+        /* if (
+            (gameObjectPickedUp?.x === 896 && gameObjectPickedUp?.y === 64) ||
+            (gameObjectPickedUp?.x === 1328 && gameObjectPickedUp?.y === 928) ||
+            (gameObjectPickedUp?.x === 1328 && gameObjectPickedUp?.y === 816) ||
+            (gameObjectPickedUp?.x === 688 && gameObjectPickedUp?.y === 416)
+        ) {
+            this.gameObject.scene.sound.play('SFX_SECRET_UNVEILED', { volume: 0.4 });
+        } */
+
+        this.gameObject.scene.sound.play('SFX_ITEM_PICKUP', { volume: 0.4 });
         if (DIRECTION.isMovingDown) {
             this.gameObject.play(
                 {

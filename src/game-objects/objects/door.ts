@@ -151,6 +151,8 @@ class Door implements CustomGameObject {
             return;
         }
 
+        this.scene.sound.play('SFX_DOOR_OPEN', { volume: 0.4, seek: 0.75 });
+
         //if (this.doorType === DOOR_TYPE.LOCK || this.doorType === DOOR_TYPE.BOSS) {
         this.isUnlocked = true;
 

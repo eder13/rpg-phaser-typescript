@@ -104,6 +104,21 @@ export class UIScene extends Phaser.Scene {
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => this.shutdownTimer());
 
         EVENT_BUS.on(
+            Events.BOSS_DEFEATED,
+            () => {
+                Logger.info(`[event]: ${Events.BOSS_DEFEATED}`);
+                this.pauseTimer();
+                Logger.info(`[UI Scene] Final Time: ${this.elapsedTimeText}`);
+
+                DataManager.getInstance().time = this.elapsedTimeText;
+            },
+            this,
+        );
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+            EVENT_BUS.off(Events.BOSS_DEFEATED, () => {}, this);
+        });
+
+        EVENT_BUS.on(
             Events.SHOW_DIALOG,
             (message: string) => {
                 Logger.info(`[event]: ${Events.SHOW_DIALOG}, args=${message}`);

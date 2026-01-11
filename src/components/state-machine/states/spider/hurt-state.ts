@@ -30,6 +30,8 @@ class HurtStateSpider extends AbstractMovableState {
         body.velocity.x = 0;
         body.velocity.y = 0;
 
+        this.gameObject.scene.sound.play('SFX_ENEMY_HURT', { volume: 0.4 });
+
         if (hitDirection) {
             // player used sword against enemy
             if (hitDirection.UP) {

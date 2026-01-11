@@ -52,7 +52,7 @@ export class Pot extends Phaser.Physics.Arcade.Sprite implements CustomGameObjec
     }
 
     public break() {
-        console.log('***** Pot break called');
+        this.scene.sound.play('SFX_POT_BREAK', { volume: 0.4, seek: 0.25 });
 
         (this.body as Phaser.Physics.Arcade.Body).enable = false;
         this.setTexture(ASSET_KEYS.POT_BREAK, 0).play(ASSET_KEYS.POT_BREAK);

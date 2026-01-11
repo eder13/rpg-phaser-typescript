@@ -12,11 +12,16 @@ import InputComponent from '../../../input-component/input';
 import Logger from '../../../../common/logger';
 
 class RunningState extends AbstractMovableState {
+    private lastStepTime = 0;
+    private stepInterval = 300; // ms, anpassen (z.B. 250..400)
+
     constructor(gameObject: Player) {
         super(PlayerStates.RUNNING, gameObject);
     }
 
     onUpdate(args?: unknown[]) {
+        const now = this.gameObject.scene.time.now;
+
         // Wenn gesperrt: keinerlei Input verarbeiten -> Velocity stoppen
         if (this.gameObject.controls.locked) {
             this.gameObject.updateVelocity(true, 0);
@@ -76,6 +81,14 @@ class RunningState extends AbstractMovableState {
                     },
                     true,
                 );
+
+                if (now - this.lastStepTime >= this.stepInterval) {
+                    if (this.gameObject.scene.cache.audio.exists('SFX_FOOT_STEPS')) {
+                        this.gameObject.scene.sound.play('SFX_FOOT_STEPS', { volume: 0.2 });
+                        this.lastStepTime = now;
+                    }
+                }
+
                 this.gameObject.updateVelocity(false, 1);
                 DIRECTION.isPlayerMoving = true;
             } else if (this.gameObject.controlsComponent.controls.isUpDown) {
@@ -91,6 +104,14 @@ class RunningState extends AbstractMovableState {
                     },
                     true,
                 );
+
+                if (now - this.lastStepTime >= this.stepInterval) {
+                    if (this.gameObject.scene.cache.audio.exists('SFX_FOOT_STEPS')) {
+                        this.gameObject.scene.sound.play('SFX_FOOT_STEPS', { volume: 0.2 });
+                        this.lastStepTime = now;
+                    }
+                }
+
                 this.gameObject.updateVelocity(false, -1);
                 DIRECTION.isPlayerMoving = true;
             } else {
@@ -124,6 +145,13 @@ class RunningState extends AbstractMovableState {
                         },
                         true,
                     );
+
+                    if (now - this.lastStepTime >= this.stepInterval) {
+                        if (this.gameObject.scene.cache.audio.exists('SFX_FOOT_STEPS')) {
+                            this.gameObject.scene.sound.play('SFX_FOOT_STEPS', { volume: 0.2 });
+                            this.lastStepTime = now;
+                        }
+                    }
                 }
 
                 this.gameObject.updateVelocity(true, -1);
@@ -155,6 +183,13 @@ class RunningState extends AbstractMovableState {
                         },
                         true,
                     );
+
+                    if (now - this.lastStepTime >= this.stepInterval) {
+                        if (this.gameObject.scene.cache.audio.exists('SFX_FOOT_STEPS')) {
+                            this.gameObject.scene.sound.play('SFX_FOOT_STEPS', { volume: 0.2 });
+                            this.lastStepTime = now;
+                        }
+                    }
                 }
                 this.gameObject.updateVelocity(true, 1);
                 DIRECTION.isPlayerMoving = true;

@@ -21,6 +21,8 @@ class DeathStateBlob extends AbstractMovableState {
 
         this.gameObject.invulnerableComponent.invulnerable = true;
 
+        this.gameObject.scene.sound.play('SFX_ENEMY_DEAD', { volume: 0.4 });
+
         this.gameObject.play({
             key: BLOB_ANIMATION_KEYS.DEATH,
             repeat: 0,

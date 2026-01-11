@@ -77,7 +77,7 @@ class Boss extends Phaser.Physics.Arcade.Sprite {
         this.stateMachine.addState(randomState);
         const preAttackState: AttackStateBoss = new AttackStateBoss(this);
         this.stateMachine.addState(preAttackState);
-        this.stateMachine.setState(BossStates.HURT);
+        this.stateMachine.setState(BossStates.IDLE);
         this.scene.tweens.add({
             targets: this,
             scaleX: TWEEN_SCALE_X_PULSE,

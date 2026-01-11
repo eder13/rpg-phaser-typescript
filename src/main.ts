@@ -7,6 +7,8 @@ import { UIScene } from './scenes/ui-scene';
 import { GameOverScene } from './scenes/game-over-scene';
 import { StartScreen } from './scenes/start-screen';
 import PauseScene from './scenes/pause-scene';
+import CongratulationsScene from './scenes/congratulations-scene';
+import { LeaderboardScene } from './scenes/leaderboard-scene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.WEBGL,
@@ -30,6 +32,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     },
     fps: { target: 60, forceSetTimeOut: false },
     render: { pixelArt: true, antialias: false },
+    dom: { createContainer: true },
 };
 
 const game = new Phaser.Game(gameConfig);
@@ -41,4 +44,6 @@ game.scene.add(SCENE_KEYS.UI_SCENE, UIScene);
 game.scene.add(SCENE_KEYS.GAME_OVER_SCENE, GameOverScene);
 game.scene.add(SCENE_KEYS.START_SCREEN, StartScreen);
 game.scene.add(SCENE_KEYS.PAUSE_MENU, PauseScene);
+game.scene.add(SCENE_KEYS.CONGRATULATIONS, CongratulationsScene);
+game.scene.add(SCENE_KEYS.LEADERBOARD_SCENE, LeaderboardScene);
 game.scene.start(SCENE_KEYS.PRELOAD_SCENE);

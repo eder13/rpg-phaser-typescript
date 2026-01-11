@@ -85,12 +85,14 @@ export class GameScene extends Phaser.Scene {
     lockedDoorsBlockingGroup!: Phaser.GameObjects.Group;
     buttonGroup!: Phaser.GameObjects.Group;
     buttonOverlapCollider!: Phaser.Physics.Arcade.Collider;
-
     private _freezeState = {
         enemies: new Map<Phaser.GameObjects.GameObject, { active: boolean; bodyEnabled: boolean }>(),
         pausedTweensByEnemy: new Map<Phaser.GameObjects.GameObject, Phaser.Tweens.Tween[]>(),
         pausedTweens: false,
     };
+    private music?: Phaser.Sound.BaseSound;
+    private hasStartedBossBattle: boolean = false;
+    hasBossDefeated: boolean = false;
 
     constructor() {
         super({
@@ -352,7 +354,6 @@ export class GameScene extends Phaser.Scene {
 
         console.log('#####** this.blockinggroup', this.blockingGroup);
         console.log('#####** this.enemyGroup', this.enemyGroup);
-
         console.log('#####** [btn] this.buttongroupt', this.buttonGroup);
 
         // run scenes in paralell (UI on top of scene)
@@ -365,16 +366,30 @@ export class GameScene extends Phaser.Scene {
             if (this.scene.isActive(SCENE_KEYS.PRELOAD_SCENE)) return;
             this.scene.launch(SCENE_KEYS.PAUSE_MENU, { pausedScene: SCENE_KEYS.GAME_SCENE });
             this.scene.pause(SCENE_KEYS.GAME_SCENE);
+
+            this.sound.pauseAll();
         });
+
+        this.music = this.sound.add('DUNGEON_MAIN_MUSIC', { loop: true, volume: 0.5 });
+        this.music.play();
     }
 
     update(): void {
         if (this.currentRoomId === 1) {
             this.enemyGroup.children.each((enemy) => {
-                if (enemy instanceof Boss) {
+                if (enemy instanceof Boss && !this.hasStartedBossBattle) {
                     enemy.startFight();
+                    this.music?.stop();
+                    this.music = this.sound.add('BOSS_THEME', { loop: true, volume: 0.5 });
+                    this.music.play();
+                    this.hasStartedBossBattle = true;
                 }
+                return null;
             });
+        }
+
+        if (this.hasBossDefeated) {
+            this.freezeWorldWithPlayer(Infinity);
         }
     }
 
@@ -606,18 +621,23 @@ export class GameScene extends Phaser.Scene {
                 }
 
                 // collision between enemy and pot and various logic like saw does not care
-                if (
-                    this.player.objectHeldComponent._object &&
-                    this.player.objectHeldComponent._object instanceof Pot &&
-                    enemy instanceof Saw &&
-                    gameObject instanceof Pot
-                ) {
+                if (enemy instanceof Saw && gameObject instanceof Pot) {
                     return false;
                 }
                 if (
                     this.player.objectHeldComponent._object &&
                     this.player.objectHeldComponent._object instanceof Pot &&
                     enemy instanceof Spider
+                ) {
+                    return true;
+                }
+
+                console.log('#####** [pot]', this.player.objectHeldComponent._object);
+
+                if (
+                    this.player.objectHeldComponent._object &&
+                    this.player.objectHeldComponent._object instanceof Pot &&
+                    enemy instanceof Blob
                 ) {
                     return true;
                 }
@@ -638,8 +658,81 @@ export class GameScene extends Phaser.Scene {
         this.collisionsTilemap.setCollision(this.collisionsTilemap.tileset[0].firstgid);
 
         this.physics.add.collider(this.blockingGroup, this.enemyCollisionTilemap);
-        this.physics.add.collider(this.enemyGroup, this.enemyCollisionTilemap);
-        this.enemyCollisionTilemap.setCollision(this.enemyCollisionTilemap.tileset[0].firstgid);
+        // enable collision for all tiles on the layer (sauberste Option)
+        this.enemyCollisionTilemap.setCollisionByExclusion([-1], true);
+
+        // debug: prüfe, ob Enemies Bodies haben
+        // @ts-ignore
+        this.enemyGroup.children.each((e: any) => {
+            console.log('ENEMY BODY CHECK', e.constructor?.name, 'body=', !!e.body, e.body);
+        });
+
+        // add collider with callback (tile callback signature: (gameObject, tile) => void)
+        this.physics.add.collider(
+            this.enemyGroup,
+            this.enemyCollisionTilemap,
+            (enemyObj: any) => {
+                const enemy = enemyObj.body && enemyObj.body.gameObject ? enemyObj.body.gameObject : enemyObj;
+
+                if (!(enemy instanceof Saw)) return;
+
+                // get arcade body
+                const body = (enemy as any).body as Phaser.Physics.Arcade.Body | undefined;
+                if (!body) return;
+
+                const enemyGroup = this.objectsByRoomId[this.currentRoomId].enemyGroup;
+
+                const sawsInRoom = enemyGroup.every((enemy) => {
+                    return enemy instanceof Saw && enemy.active === true;
+                });
+
+                if (!sawsInRoom) return;
+
+                // current blocked state
+                const nowBlocked = {
+                    left: !!body.blocked.left,
+                    right: !!body.blocked.right,
+                    up: !!body.blocked.up,
+                    down: !!body.blocked.down,
+                };
+
+                // previous blocked state (stored on the enemy)
+                const prev = (enemy.getData && enemy.getData('wasBlocked')) ||
+                    enemy.wasBlocked || { left: false, right: false, up: false, down: false };
+
+                // detect newly blocked side (transition false -> true)
+                const newlyBlocked =
+                    (nowBlocked.left && !prev.left) ||
+                    (nowBlocked.right && !prev.right) ||
+                    (nowBlocked.up && !prev.up) ||
+                    (nowBlocked.down && !prev.down);
+
+                // store current blocked state for next time
+                if (enemy.setData) enemy.setData('wasBlocked', nowBlocked);
+                else enemy.wasBlocked = nowBlocked;
+
+                if (!newlyBlocked) {
+                    // nothing new, ignore (prevents multi-tile / multi-frame spam)
+                    return;
+                }
+
+                // optional extra cooldown (ms) to avoid very rapid retriggering
+                const now = this.time.now;
+                const last = (enemy.getData && enemy.getData('lastWallHit')) || enemy.lastWallHit || 0;
+                if (now - last < 1000) return;
+                if (enemy.setData) enemy.setData('lastWallHit', now);
+                else enemy.lastWallHit = now;
+
+                const key = 'SFX_SAW_HIT_WALL';
+                if (this.cache.audio.exists(key)) {
+                    this.sound.play(key, { volume: 0.2 });
+                } else {
+                    console.warn(`Audio key "${key}" not found when Saw hit wall`);
+                }
+            },
+            undefined,
+            this,
+        );
 
         this.doorOverlapCollider = this.physics.add.overlap(this.player, this.doorTransitionGroup, (_, doorObject) => {
             this.handleRoomTransition(doorObject as Phaser.Types.Physics.Arcade.GameObjectWithBody);
@@ -955,6 +1048,7 @@ export class GameScene extends Phaser.Scene {
 
         this.cameras.main.once('camerafadeoutcomplete', () => {
             this.scene.start(SCENE_KEYS.GAME_OVER_SCENE);
+            this.sound.stopAll();
             this.scene.stop(SCENE_KEYS.UI_SCENE);
         });
     }
@@ -965,7 +1059,11 @@ export class GameScene extends Phaser.Scene {
         // open Doors again
         const doors = this.objectsByRoomId[this.currentRoomId].doors;
         doors.forEach((door) => {
-            if (door.doorObject && door.doorType === DOOR_TYPE.TRAP) {
+            if (
+                door.doorObject &&
+                door.doorType === DOOR_TYPE.TRAP &&
+                door.trapDoorTrigger === TRAP_TYPE.ENEMIES_DEFEATED
+            ) {
                 door.openDoor();
             }
         });
@@ -974,5 +1072,19 @@ export class GameScene extends Phaser.Scene {
     private handleBossDefeated(boss: Boss) {
         console.log('[boss defeated] Boss defeated:', boss);
         // Handle boss defeat logic
+        this.hasBossDefeated = true;
+
+        // Handle player defeat logic
+        this.cameras.main.fadeOut(1000, 0, 0, 0);
+
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.scene.start(SCENE_KEYS.CONGRATULATIONS);
+            this.sound.stopAll();
+            this.scene.stop(SCENE_KEYS.UI_SCENE);
+        });
+    }
+
+    get currentRoomWithId() {
+        return this.currentRoomId;
     }
 }

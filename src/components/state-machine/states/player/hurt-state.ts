@@ -27,10 +27,30 @@ class HurtState extends AbstractMovableState {
         body.velocity.x = 0;
         body.velocity.y = 0;
 
+        this.gameObject.scene.sound.play('SFX_PLAYER_HURT', { volume: 0.4 });
+
+        // hack, somehow [pot] break sounds are not stopped
+        this.gameObject.scene.time.delayedCall(50, () => {
+            const mgr = this.gameObject.scene.sound as Phaser.Sound.BaseSoundManager;
+            // @ts-ignore
+            mgr.sounds.forEach((s: Phaser.Sound.BaseSound) => {
+                if (!s.key) return;
+                if (s.key.includes('POT') || s.key.includes('SFX_POT')) {
+                    console.log('##### [pot] foreach', s);
+
+                    if (s.isPlaying) s.stop();
+                }
+            });
+        });
+
         const heldGameObjectComponent = (this.gameObject as any).objectHeldComponent;
         if (heldGameObjectComponent && heldGameObjectComponent._object) {
+            console.log('[pot] heldGameObjectComponent', heldGameObjectComponent);
+
             const throwableObjectComponent = heldGameObjectComponent._object.throwableObjectComponent;
             if (throwableObjectComponent !== undefined) {
+                console.log('[pot] throwableObjectComponent', throwableObjectComponent);
+
                 throwableObjectComponent?.drop?.();
             }
         }

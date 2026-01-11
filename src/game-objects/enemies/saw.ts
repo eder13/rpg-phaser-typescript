@@ -22,6 +22,13 @@ class Saw extends Phaser.Physics.Arcade.Sprite {
     controlsComponent: ControlsComponent;
     invulnerableComponent: InvulnerableComponent;
     stateMachine: StateMachine;
+    public lastWallHit = 0;
+    public wasBlocked = {
+        left: false,
+        right: false,
+        up: false,
+        down: false,
+    };
 
     constructor(config: SawConfig) {
         const { scene, position, assetKey, frame, movement, isInvulnerable, invulnerableDuration } = config;

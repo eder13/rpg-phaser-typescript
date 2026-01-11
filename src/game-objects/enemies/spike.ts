@@ -25,6 +25,10 @@ class Spike extends Phaser.Physics.Arcade.Sprite {
         this.stateMachine.addState(spikeIdleState);
         this.stateMachine.setState(SpikeStates.IDLE);
     }
+
+    update(...args: any[]): void {
+        this.stateMachine.update();
+    }
 }
 
 export default Spike;

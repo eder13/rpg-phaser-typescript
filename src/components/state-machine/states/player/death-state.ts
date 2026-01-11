@@ -27,6 +27,22 @@ class DeathStatePlayer extends AbstractMovableState {
 
         this.gameObject.invulnerableComponent.invulnerable = true;
 
+        this.gameObject.scene.sound.play('SFX_ENEMY_DEAD', { volume: 0.4 });
+
+        // hack, somehow [pot] break sounds are not stopped
+        this.gameObject.scene.time.delayedCall(50, () => {
+            const mgr = this.gameObject.scene.sound as Phaser.Sound.BaseSoundManager;
+            // @ts-ignore
+            mgr.sounds.forEach((s: Phaser.Sound.BaseSound) => {
+                if (!s.key) return;
+                if (s.key.includes('POT') || s.key.includes('SFX_POT')) {
+                    console.log('##### [pot] foreach', s);
+
+                    if (s.isPlaying) s.stop();
+                }
+            });
+        });
+
         this.gameObject.play({
             key: PlayerAnimation.PLAYER_DEATH,
             repeat: 0,

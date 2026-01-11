@@ -11,4 +11,5 @@ export const Events = {
     SHOW_DIALOG: 'SHOW_DIALOG',
     HIDE_DIALOG: 'HIDE_DIALOG',
     BOSS_DEFEATED: 'BOSS_DEFEATED',
+    FINAL_TIME: 'FINAL_TIME',
 } as const;

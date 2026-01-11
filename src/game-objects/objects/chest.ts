@@ -100,6 +100,7 @@ export class Chest extends Phaser.Physics.Arcade.Image implements CustomGameObje
         }
 
         (this.scene as any).freezeWorldWithPlayer(DURATION_FREEZE_SHOW_ITEM_REVEALED_CHEST);
+        this.scene.sound.play('SFX_TADA_CHEST', { volume: 0.4, seek: 0.0 });
 
         if (this._contents === CHEST_REWARD.NOTHING) {
             this._rewardObject = undefined;
@@ -143,8 +144,6 @@ export class Chest extends Phaser.Physics.Arcade.Image implements CustomGameObje
                 Events.SHOW_DIALOG,
                 this.contents === CHEST_REWARD.SMALL_KEY ? 'You found a small key!' : 'You found the boss key!',
             );
-
-            InventoryManager.getInstance().addKey(this.contents === CHEST_REWARD.SMALL_KEY ? 'standard' : 'boss');
         }
 
         this.scene.time.delayedCall(DURATION_FREEZE_SHOW_ITEM_REVEALED_CHEST, () => {

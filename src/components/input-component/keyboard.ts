@@ -47,7 +47,7 @@ class KeyboardInput extends InputComponent {
     }
 
     get isAttackKeyDown(): boolean {
-        return this.cursorKeyboard.space.isDown;
+        return Phaser.Input.Keyboard.JustDown(this.cursorKeyboard.space);
     }
 
     get isActionKeyDown(): boolean {

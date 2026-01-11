@@ -102,9 +102,6 @@ class Player extends Phaser.Physics.Arcade.Sprite implements CustomGameObject {
 
     update(): void {
         this.stateMachine.update();
-
-        console.log('[colliding game objects]', this.collidingObjectComponent._objects);
-
         this.collidingObjectComponent.reset();
     }
 

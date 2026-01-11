@@ -57,28 +57,12 @@ export class GameOverScene extends Phaser.Scene {
 
         if (this.keyboardInput.isEnterKeyDown) {
             if (this.menuOptionIndex === 0) {
-                DataManager.getInstance().reset();
-                InventoryManager.getInstance().reset();
-
-                const levelData: LevelData = {
-                    level: LEVEL_NAME.DUNGEON_1,
-                    doorId: 1,
-                    roomId: 3,
-                };
-
-                this.scene.start(SCENE_KEYS.GAME_SCENE, levelData);
+                window.location.href = '?skipStartScreen=true';
             } else if (this.menuOptionIndex === 1) {
                 window.close();
             }
         }
 
         this.cursor.y = 300 + this.menuOptionIndex * 20;
-    }
-
-    private stopUIScene(): void {
-        this.scene.stop(SCENE_KEYS.UI_SCENE); // UI komplett stoppen
-        // alternativ bei Respawn:
-        const ui = this.scene.get(SCENE_KEYS.UI_SCENE) as any;
-        if (ui && typeof ui.resetTimer === 'function') ui.resetTimer();
     }
 }

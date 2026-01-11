@@ -130,6 +130,7 @@ class AttackState extends AbstractMovableState {
 
         // spiele Weapon-Animation (non-looping)
         this.weapon.play({ key: key?.anim ?? '', repeat: 0 }, true);
+        this.gameObject.scene?.sound.play('SFX_SWORD_ATTACK', { seek: 1.75 });
 
         console.log('[hitDirection] #####** key.direction outside', key?.direction);
         console.log('[hitDirection] #####** ATTACK_DIRECTION outside', ATTACK_DIRECTION);

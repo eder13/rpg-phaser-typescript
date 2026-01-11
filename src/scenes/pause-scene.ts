@@ -57,6 +57,7 @@ export default class PauseScene extends Phaser.Scene {
         if (target && this.scene.isPaused(target)) {
             this.scene.resume(target);
         }
+        this.sound.resumeAll();
         // resume UI too
         if (this.scene.isPaused(SCENE_KEYS.UI_SCENE)) {
             this.scene.resume(SCENE_KEYS.UI_SCENE);

@@ -10,6 +10,7 @@ import InventoryManager from '../components/inventory/inventory';
 export class StartScreen extends Phaser.Scene {
     cursor!: Phaser.GameObjects.Image;
     keyboardInput!: KeyboardInput;
+    menuOptionIndex: number = 0;
 
     constructor() {
         super({
@@ -44,13 +45,20 @@ export class StartScreen extends Phaser.Scene {
             })
             .setOrigin(0.5);
         this.add
-            .text(this.scale.width / 2, 320, 'Start', {
+            .text(this.scale.width / 2, 300, 'Start', {
                 fontSize: '16px',
                 align: 'center',
             })
             .setOrigin(0.5);
 
-        this.cursor = this.add.image(270, 320, ASSET_KEYS.UI_CURSOR).setOrigin(0.5);
+        this.add
+            .text(this.scale.width / 2, 320, 'Leaderboard', {
+                fontSize: '16px',
+                align: 'center',
+            })
+            .setOrigin(0.5);
+
+        this.cursor = this.add.image(230, 320, ASSET_KEYS.UI_CURSOR).setOrigin(0.5);
 
         if (this.input.keyboard) {
             this.keyboardInput = new KeyboardInput(this.input.keyboard);
@@ -58,7 +66,16 @@ export class StartScreen extends Phaser.Scene {
     }
 
     update(): void {
-        if (this.keyboardInput.isEnterKeyDown) {
+        if (this.keyboardInput.isUpDown) {
+            this.menuOptionIndex = Phaser.Math.Clamp(this.menuOptionIndex - 1, 0, 1);
+        } else if (this.keyboardInput.isDownDown) {
+            this.menuOptionIndex = Phaser.Math.Clamp(this.menuOptionIndex + 1, 0, 1);
+        }
+
+        if (
+            (this.menuOptionIndex === 0 && this.keyboardInput.isEnterKeyDown) ||
+            window.location.search.includes('skipStartScreen=true')
+        ) {
             DataManager.getInstance().reset();
             InventoryManager.getInstance().reset();
 
@@ -69,6 +86,10 @@ export class StartScreen extends Phaser.Scene {
             };
 
             this.scene.start(SCENE_KEYS.GAME_SCENE, levelData);
+        } else if (this.keyboardInput.isEnterKeyDown && this.menuOptionIndex === 1) {
+            this.scene.start(SCENE_KEYS.LEADERBOARD_SCENE);
         }
+
+        this.cursor.y = 300 + this.menuOptionIndex * 20;
     }
 }

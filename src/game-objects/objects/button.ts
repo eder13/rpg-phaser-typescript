@@ -22,6 +22,7 @@ export class Button extends Phaser.Physics.Arcade.Image implements CustomGameObj
 
     public buttonPressed() {
         this.disableObject();
+        this.scene.sound.play('SFX_BUTTON_PRESSED', { volume: 0.3 });
 
         return {
             targetIds: this.switchTargetIds,
