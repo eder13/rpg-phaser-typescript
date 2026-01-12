@@ -4,6 +4,8 @@
 
 A short zelda like dungeon adventure written in TypeScript and Phaser with a leaderboard feature for speedrunning.
 
+![DEMO](https://dungeon.uber.space/) 
+
 ## Setup
 
 1. install dependencies with `npm i`
